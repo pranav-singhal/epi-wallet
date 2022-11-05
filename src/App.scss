@@ -1,6 +1,7 @@
 @import "components/CryptoTransferMessage";
 @import "pages/ChatList";
 @import "pages/ChatPage";
+@import "pages/TransactionPopup";
 
 .app {
   display: flex;
@@ -15,11 +16,16 @@
 
 .site-page-header {
   border-bottom: 1px solid rgb(235, 237, 240);
-  height: 10%;
 }
 
 .site-page-content {
-  max-height: 90%;
+  max-height: 88%;
   padding: 10px;
   flex-grow: 1;
+}
+
+.fullpage-loader {
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
 }

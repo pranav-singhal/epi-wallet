@@ -11,6 +11,7 @@
     "antd": "^4.19.5",
     "classnames": "^2.3.1",
     "ethers": "^5.7.2",
+    "html5-qrcode": "^2.2.3",
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "prettier": "^2.6.2",
@@ -18,7 +19,9 @@
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.1",
     "sass": "^1.50.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3": "^1.8.0",
+    "webrtc-adapter": "^8.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

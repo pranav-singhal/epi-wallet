@@ -1,0 +1,43 @@
+.transaction-popup {
+  .user-account {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &__content {
+      margin-left: 20px;
+
+      &-address {
+        font-size: 10px;
+      }
+    }
+
+    &__icon {
+      margin-left: auto;
+    }
+
+    &:hover {
+      border-color: #1890ff;
+      cursor: pointer;
+    }
+  }
+
+  .eth-amounts {
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .buttons {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    button {
+      height: unset;
+      font-size: 20px;
+    }
+  }
+}

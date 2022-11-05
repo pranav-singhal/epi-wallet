@@ -1,34 +1,34 @@
-import * as ethers from "ethers";
-export const BASE_URL = 'http://localhost:1337';
-// const signer = new ethers.Wallet(NOTIFICATION_CONSUMER_1_PVT_KET);
-// const public_key = signer?.address;
-// console.log('pvt key:', localStorage.getItem('pvt_key'), public_key);
+import Web3 from "../helpers/Web3";
+
+export const BASE_URL = 'https://wallet-api-a.herokuapp.com';
 
 export const getCurrentUser = () => {
-    return localStorage.getItem('current_user');
+  return localStorage.getItem('current_user');
 }
 
 export const getCurrentUserPublicKey = () => {
-    const pvtKey = localStorage.getItem('pvt_key');
-    const signer = new ethers.Wallet(pvtKey);
-    return signer?.address;
+  return Web3.getAccountAddress();
 }
 
 export const fetchMessages = (threadUser) => {
-    return fetch(`${BASE_URL}/messages?sender=${getCurrentUser()}&recipient=${threadUser}`)
+  return fetch(`${BASE_URL}/messages?sender=${getCurrentUser()}&recipient=${threadUser}`)
     .then(res => res.json())
-  };
+};
 
 export const userDetails = {
-pranav: {
+  pranav: {
     name: 'pranav',
     address: '0xD7F1a592874bbe5d14c3f024c08b630e6De5A11B',
     avatarLink: 'https://picsum.photos/id/1025/200/300.jpg'
-},
-arvind: {
+  },
+  arvind: {
     name: 'arvind',
-    address: '0xD4ea698DfCdf0ADDeAAe77A2d6584f822738cf66',
+    address: '0xE4928EEA34C76D351D4Ed58266DEbfA7A4b42519',
     avatarLink: 'https://picsum.photos/id/237/200/300.jpg'
+  },
+  vendor: {
+    name: 'vendor',
+    address: '0xD4ea698DfCdf0ADDeAAe77A2d6584f822738cf67',
+    avatarLink: 'https://picsum.photos/id/238/200/300.jpg'
+  }
 }
-}
-  

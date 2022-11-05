@@ -7,14 +7,15 @@ import classNames from "classnames";
 import moment from "moment";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { useState } from "react";
+import _ from 'lodash';
+import {useEffect, useState} from "react";
+import Web3 from "../../helpers/Web3";
+import {BASE_URL} from "../../api";
 const MESSAGETYPES = {
   SENT: 'sent',
   RECIEVED: 'recieved'
 
 }
-
-const BASE_URL = 'http://localhost:1337';
 
 const getMessageStatus = (currentStatus) => {
   switch (currentStatus) {
@@ -32,28 +33,43 @@ const currentUser = localStorage.getItem('current_user');
 
 
 const CryptoTransferMessage = (props) => {
-  const {
-    crypto = "ETH",
-  } = props;
+  const { crypto = "ETH", message } = props;
+  const [messageStatus, setMessageStatus] = useState(message.status)
 
-  const [message, setMessage] = useState({...props});
+  useEffect(() => {
+    if (message.status !== 'pending' || _.isEmpty(message.hash)) {
+      return;
+    }
 
-  
+    const interval = setInterval(() => {
+      Web3.checkIfMined(message.hash)
+        .then((isMined) => {
+          if (!isMined) {
+            return;
+          }
 
-  const handleApprove = (txHash = 'randomHash') => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    fetch(`${BASE_URL}/transaction/${props.transactionId}`, {method: 'PUT', headers: myHeaders, body: JSON.stringify({
-        status: "pending",
-        id: props.transactionId,
-        hash: txHash
-    })})
-        .then(res => res.json())
-        .then((res) => {
-          setMessage({...message, ...res});
+          clearInterval(interval);
+
+          setMessageStatus('completed');
+
+          const myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          return fetch(`${BASE_URL}/transaction/${message.transactionId}`, {
+            method: 'PUT',
+            headers: myHeaders,
+            body: JSON.stringify({
+              status: "completed",
+              id: message.transactionId,
+            })
+          })
         })
-
-  }
+        .catch((err) => {
+          console.error(err);
+          clearInterval(interval);
+        })
+    }, 3000)
+  })
 
   return (
     <div className="crypto-message">
@@ -67,8 +83,8 @@ const CryptoTransferMessage = (props) => {
         </div>
         <div className="crypto-message-card__amount">
           {message.amount} {crypto}
-          {message.status === "unconfirmed" && message.type === MESSAGETYPES.RECIEVED && (
-            <Button type="primary" shape="round" onClick={() => {handleApprove()}}>
+          {messageStatus === "unconfirmed" && message.type === MESSAGETYPES.RECIEVED && (
+            <Button type="primary" shape="round" onClick={() => props.handleApprove()}>
               Approve
             </Button>
           )}
@@ -76,15 +92,15 @@ const CryptoTransferMessage = (props) => {
 
         <div className="crypto-message-card__footer">
           <div className="crypto-message-card__footer-status">
-            {message.status === "completed" ? (
+            {messageStatus === "completed" ? (
               <CheckCircleOutlined />
             ) : (
               <ClockCircleOutlined />
             )}
-            <span>{getMessageStatus(message.status)}  txID: {message.transactionId}</span>
+            <span>{getMessageStatus(messageStatus)}</span>
           </div>
           <div className="crypto-message-card__footer-timestamp">
-            {moment.unix(parseInt(message.createdAt)).fromNow()}
+            {moment(parseInt(message.createdAt)).fromNow()}
           </div>
         </div>
       </div>

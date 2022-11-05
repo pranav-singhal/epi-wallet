@@ -1,16 +1,14 @@
 import { Button } from "antd";
 import React from "react";
 import * as PushAPI from "@pushprotocol/restapi";
-import * as ethers from "ethers";
 import useIsSubscribed from "../../hooks/useIsSubscribed";
+import Web3 from "../../helpers/Web3";
 
-const NOTIFICATION_CONSUMER_1_PVT_KEY = localStorage.getItem('pvt_key');
 const NOTIFICATION_CHANNEL = '0xBA36124E8af635d9d32C4cC49802cacade133a5F';
-const signer = new ethers.Wallet(NOTIFICATION_CONSUMER_1_PVT_KEY);
+const signer = Web3.getEthersWallet();
 const public_key = signer?.address;
-const OptInNotificationsButton = () => {
-    
 
+const OptInNotificationsButton = () => {
     const [isLoading, isSubscribed, setIsSubscribed] = useIsSubscribed(public_key);
 
     const handleOptIn = () => {
@@ -51,14 +49,14 @@ const OptInNotificationsButton = () => {
         return (
             <Button onClick={handleOptIn} >
                 Opt in
-            </Button>  
+            </Button>
         )
     }
-    
+
     return (
         <Button onClick={handleOptOut} >
                 Opt out
-            </Button>  
+            </Button>
     )
 }
 

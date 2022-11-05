@@ -7,20 +7,7 @@ import { useEffect, useState } from "react";
 import { Avatar, Badge, Col, Row } from "antd";
 import _ from "lodash";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { BASE_URL } from "../../api";
-
-const userDetails = {
-  pranav: {
-    name: 'pranav',
-    address: '0xD7F1a592874bbe5d14c3f024c08b630e6De5A11B',
-    avatarLink: 'https://picsum.photos/id/1025/200/300.jpg'
-  },
-  arvind: {
-    name: 'arvind',
-    address: '0xD4ea698DfCdf0ADDeAAe77A2d6584f822738cf66',
-    avatarLink: 'https://picsum.photos/id/237/200/300.jpg'
-  }
-}
+import { BASE_URL, userDetails } from "../../api";
 
 const ChatList = (props) => {
   const [threadUsers, setThreadUsers] = useState([]);
@@ -31,7 +18,7 @@ const ChatList = (props) => {
       headers: {
         'Content-Type': 'application/json'
       }
-      
+
     })
     .then(res => res.json())
     .then(res => {
