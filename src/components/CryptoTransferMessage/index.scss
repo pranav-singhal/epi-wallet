@@ -1,0 +1,53 @@
+.crypto-message {
+  &-card {
+    width: 75%;
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    background-color: #e6fffb;
+
+    &__type {
+      font-size: 12px;
+    }
+
+    &__amount {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    &__footer {
+      font-size: 12px;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      &-status {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        span:last-child {
+          font-size: 10px;
+        }
+      }
+
+      &-timestamp {
+        font-size: 10px;
+      }
+    }
+  }
+
+  .float-right {
+    margin-left: auto;
+  }
+}

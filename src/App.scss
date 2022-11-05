@@ -1,0 +1,25 @@
+@import "components/CryptoTransferMessage";
+@import "pages/ChatList";
+@import "pages/ChatPage";
+
+.app {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 16px;
+}
+
+.site-page-header {
+  border-bottom: 1px solid rgb(235, 237, 240);
+  height: 10%;
+}
+
+.site-page-content {
+  max-height: 90%;
+  padding: 10px;
+  flex-grow: 1;
+}
