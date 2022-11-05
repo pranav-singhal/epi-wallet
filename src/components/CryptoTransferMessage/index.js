@@ -7,42 +7,68 @@ import classNames from "classnames";
 import moment from "moment";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { useState } from "react";
+const MESSAGETYPES = {
+  SENT: 'sent',
+  RECIEVED: 'recieved'
+
+}
+
+const BASE_URL = 'http://localhost:1337';
+
+const getMessageStatus = (currentStatus) => {
+  switch (currentStatus) {
+    case "pending":
+      return "In Progress";
+    case "unconfirmed":
+      return "Pending Approval";
+    case "completed":
+    default:
+      return "Done";
+  }
+};
+
+const currentUser = localStorage.getItem('current_user');
+
 
 const CryptoTransferMessage = (props) => {
   const {
-    transferType,
-    amount,
     crypto = "ETH",
-    timestamp,
-    currentStatus,
   } = props;
 
-  const getMessageStatus = () => {
-    switch (currentStatus) {
-      case "mining":
-        return "In Progress";
-      case "pending_approval":
-        return "Pending Approval";
-      case "completed":
-      default:
-        return "Done";
-    }
-  };
+  const [message, setMessage] = useState({...props});
+
+  
+
+  const handleApprove = (txHash = 'randomHash') => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    fetch(`${BASE_URL}/transaction/${props.transactionId}`, {method: 'PUT', headers: myHeaders, body: JSON.stringify({
+        status: "pending",
+        id: props.transactionId,
+        hash: txHash
+    })})
+        .then(res => res.json())
+        .then((res) => {
+          setMessage({...message, ...res});
+        })
+
+  }
 
   return (
     <div className="crypto-message">
       <div
         className={classNames("crypto-message-card", {
-          "float-right": transferType === "send",
+          "float-right": message.type === MESSAGETYPES.SENT,
         })}
       >
         <div className="crypto-message-card__type">
-          {transferType === "send" ? "From you" : "To you"}
+          {message.from === currentUser ? "From you" : "To you"}
         </div>
         <div className="crypto-message-card__amount">
-          {amount} {crypto}
-          {currentStatus === "pending_approval" && transferType === "send" && (
-            <Button type="primary" shape="round">
+          {message.amount} {crypto}
+          {message.status === "unconfirmed" && message.type === MESSAGETYPES.RECIEVED && (
+            <Button type="primary" shape="round" onClick={() => {handleApprove()}}>
               Approve
             </Button>
           )}
@@ -50,15 +76,15 @@ const CryptoTransferMessage = (props) => {
 
         <div className="crypto-message-card__footer">
           <div className="crypto-message-card__footer-status">
-            {currentStatus === "completed" ? (
+            {message.status === "completed" ? (
               <CheckCircleOutlined />
             ) : (
               <ClockCircleOutlined />
             )}
-            <span>{getMessageStatus()}</span>
+            <span>{getMessageStatus(message.status)}  txID: {message.transactionId}</span>
           </div>
           <div className="crypto-message-card__footer-timestamp">
-            {moment(timestamp).fromNow()}
+            {moment.unix(parseInt(message.createdAt)).fromNow()}
           </div>
         </div>
       </div>

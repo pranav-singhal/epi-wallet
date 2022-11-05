@@ -3,59 +3,82 @@
  * @profile https://github.com/arvindkalra
  * @date 17/04/22
  */
-import { Button, InputNumber } from "antd";
+import { Button, InputNumber, message } from "antd";
 import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
+import { BASE_URL, getCurrentUser, fetchMessages, getCurrentUserPublicKey } from "../../api";
 import CryptoTransferMessage from "../../components/CryptoTransferMessage";
+import useMessageApi from "../../hooks/useMessageApi";
 
-const TRANSFER_MESSAGES = [
-  {
-    id: 2,
-    transferType: "receive",
-    amount: 1,
-    timestamp: "2022-04-17T07:03:11.134Z",
-    currentStatus: "completed",
-  },
-  {
-    id: 2,
-    transferType: "receive",
-    amount: 1,
-    timestamp: "2022-04-17T07:03:11.134Z",
-    currentStatus: "completed",
-  },
-  {
-    id: 2,
-    transferType: "receive",
-    amount: 1,
-    timestamp: "2022-04-17T07:03:11.134Z",
-    currentStatus: "completed",
-  },
-  {
-    id: 3,
-    transferType: "send",
-    amount: 0.1,
-    timestamp: "2022-04-17T09:03:11.134Z",
-    currentStatus: "mining",
-  },
-  {
-    id: 6,
-    transferType: "send",
-    amount: 0.4,
-    timestamp: "2022-04-17T10:18:46.853Z",
-    currentStatus: "pending_approval",
-  },
-  {
-    id: 4,
-    transferType: "receive",
-    amount: 0.1,
-    timestamp: "2022-04-17T11:18:46.853Z",
-    currentStatus: "pending_approval",
-  },
-];
-
-const ChatPage = () => {
-  const [messages, setMessages] = useState(TRANSFER_MESSAGES);
+const ChatPage = ({threadUser}) => {
+  const [newMessageAmount, setNewMessageAmount] = useState(0);
   const messagesElement = useRef(null);
+  const [messagesArray, setMessageArray] = useState();
+
+  
+
+  useEffect(() => {
+    fetchMessages(threadUser)
+    .then((res) => {  
+        setMessageArray(res.messages);
+    })
+
+}, []);
+
+const handleSend = (txHash = 'someRandomHash') => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  fetch(`${BASE_URL}/message`, {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify({
+      "type": "recieved",
+      "sender": getCurrentUser(),
+      "recipient": threadUser,
+      "txDetails": {
+        "amount": newMessageAmount,
+        hash: txHash
+
+      },
+      meta: {
+        publicKey: getCurrentUserPublicKey()
+      }
+    }),
+  })
+  .then(response => response.json())
+  .then(result => {
+    fetchMessages(threadUser)
+    .then((res) => {
+      setMessageArray(res.messages)
+    })
+  })
+  .catch(error => console.log('error', error));
+}
+
+  const handleRequest = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    fetch(`${BASE_URL}/message`, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        "type": "request",
+        "sender": getCurrentUser(),
+        "recipient": threadUser,
+        "txDetails": {
+          "amount": newMessageAmount
+        }
+      }),
+    })
+    .then(response => response.json())
+    .then(result => {
+      fetchMessages(threadUser)
+      .then((res) => {
+        setMessageArray(res.messages)
+      })
+    })
+    .catch(error => console.log('error', error));
+  }
 
   useEffect(() => {
     if (messagesElement) {
@@ -72,12 +95,12 @@ const ChatPage = () => {
   return (
     <div className="chat-page">
       <div className="chat-page-input">
-        <InputNumber min={0} style={{ width: "100%" }} placeholder="Amount" />
-        <Button type="primary">Request</Button>
-        <Button type="primary">Send</Button>
+        <InputNumber min={0} style={{ width: "100%" }} placeholder="Amount" onChange={setNewMessageAmount} />
+        <Button type="primary" onClick={handleRequest} >Request</Button>
+        <Button type="primary" onClick={() => {handleSend()}}>Send</Button>
       </div>
       <div className="chat-page-messages" ref={messagesElement}>
-        {_.map(messages, (message) => (
+        {_.map(_.orderBy(messagesArray, ['createdAt'], ['asc']), (message) => (
           <CryptoTransferMessage key={message.id} {...message} />
         ))}
       </div>

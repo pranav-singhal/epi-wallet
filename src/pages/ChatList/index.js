@@ -3,54 +3,69 @@
  * @profile https://github.com/arvindkalra
  * @date 17/04/22
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, Badge, Col, Row } from "antd";
 import _ from "lodash";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { BASE_URL } from "../../api";
 
-const ROWS = [
-  {
-    name: "Alice",
-    address: "0xE4928EEA34C76D351D4Ed58266DEbfA7A4b42519",
-    avatarLink: "https://www.w3schools.com/howto/img_avatar.png",
-    numNewMessages: 0,
+const userDetails = {
+  pranav: {
+    name: 'pranav',
+    address: '0xD7F1a592874bbe5d14c3f024c08b630e6De5A11B',
+    avatarLink: 'https://picsum.photos/id/1025/200/300.jpg'
   },
-  {
-    name: "Bob",
-    address: "0xbf8C34F0f19e7a0fBa497372BFEca821C145B24D",
-    avatarLink: "https://www.w3schools.com/howto/img_avatar.png",
-    numNewMessages: 1,
-  },
-];
+  arvind: {
+    name: 'arvind',
+    address: '0xD4ea698DfCdf0ADDeAAe77A2d6584f822738cf66',
+    avatarLink: 'https://picsum.photos/id/237/200/300.jpg'
+  }
+}
 
 const ChatList = (props) => {
-  const [chatRows, setChatRows] = useState(ROWS);
+  const [threadUsers, setThreadUsers] = useState([]);
+
+  useEffect(() => {
+    // TODO - add new message count - not sure about how to do it
+    fetch(`${BASE_URL}/threads?sender=${localStorage.getItem('current_user')}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      
+    })
+    .then(res => res.json())
+    .then(res => {
+      setThreadUsers(res?.threads || []);
+    });
+  }, [])
 
   return (
     <div className="chat-list">
       <Row>
-        {_.map(chatRows, (chatItem) => (
-          <Col span={24} key={chatItem.address}>
+        {_.map(threadUsers, (threadUserName) => {
+          const threadUser = userDetails[threadUserName];
+          return (
+            <Col span={24} key={threadUser.address}>
             <div
               className="chat-list-row"
               onClick={() => {
-                props.openChat(chatItem);
+                props.openChat(threadUser);
               }}
             >
-              {chatItem.numNewMessages > 0 ? (
+              {/* {chatItem.numNewMessages > 0 ? (
                 <Badge count={chatItem.numNewMessages}>
                   <Avatar src={chatItem.avatarLink} />
                 </Badge>
-              ) : (
-                <Avatar src={chatItem.avatarLink} />
-              )}
+              ) : ( */}
+              <Avatar src={threadUser.avatarLink} />
+              {/* )} */}
 
               <div className="chat-list-row__content">
                 <div className="chat-list-row__content-name">
-                  {chatItem.name}
+                  {threadUser.name}
                 </div>
                 <div className="chat-list-row__content-address">
-                  {chatItem.address}
+                  {threadUser.address}
                 </div>
               </div>
               <div className="chat-list-row__icon">
@@ -58,7 +73,8 @@ const ChatList = (props) => {
               </div>
             </div>
           </Col>
-        ))}
+          )
+        })}
       </Row>
     </div>
   );
