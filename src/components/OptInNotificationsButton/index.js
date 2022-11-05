@@ -4,7 +4,7 @@ import * as PushAPI from "@pushprotocol/restapi";
 import useIsSubscribed from "../../hooks/useIsSubscribed";
 import Web3 from "../../helpers/Web3";
 
-const NOTIFICATION_CHANNEL = '0xBA36124E8af635d9d32C4cC49802cacade133a5F';
+export const NOTIFICATION_CHANNEL = '0xBA36124E8af635d9d32C4cC49802cacade133a5F';
 const signer = Web3.getEthersWallet();
 const public_key = signer?.address;
 

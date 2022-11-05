@@ -6,15 +6,16 @@
 import React, {useEffect, useState} from 'react'
 import {Avatar, Button, Descriptions, Spin, Space} from "antd";
 import Web3 from "../../helpers/Web3";
+import _ from "lodash";
 
 const Account = (props) => {
-  const {name, address, avatarLink} = props;
+  const {name, address, avatar} = props;
 
   return (
     <div
       className="user-account"
     >
-      <Avatar src={avatarLink} />
+      <Avatar src={avatar} />
       <div className="user-account__content">
         <div className="user-account__content-name">
           {name}
@@ -49,11 +50,8 @@ const TransactionPopup = (props) => {
   const { to, amount, transactionId, qrId } = props.transaction;
   const totalGasAmount = gas * gasPrice;
 
-  const from = {
-    name: 'Arvind From',
-    address: Web3.getAccountAddress(),
-    avatarLink: 'https://www.w3schools.com/howto/img_avatar.png'
-  }
+  const currentUser = localStorage.getItem('current_user');
+  const from = _.get(props, ['userDetails', currentUser]);
 
   if (isLoading) {
     return (

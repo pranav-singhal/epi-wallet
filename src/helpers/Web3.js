@@ -4,11 +4,12 @@
  * @date 26/10/22
  */
 import Web3 from "web3";
+import _ from 'lodash';
 import * as ethers from "ethers";
 import {BASE_URL, getCurrentUser} from "../api";
 
-const PASSWORD = 'crypto_project_x'
-
+export const PASSWORD = 'crypto_project_x';
+//114addfd125a71f033c64f1eeb3b59ca468481233087aaca1b94ad09e54d71d4
 class Web3Helper {
   web3 = null;
 
@@ -16,18 +17,38 @@ class Web3Helper {
     this.web3 = new Web3('https://sepolia.infura.io/v3/464843df892c4c7f8fb28e076da669f9');
 
     this.web3.eth.accounts.wallet.load(PASSWORD)
-
-    // uncomment to setup your wallet in local storage
-    // this.web3.eth.accounts.wallet.add('92c8f79afac2b63bfdc0f76020bf23d29ccf0d2dd2df7320e453b83276c454d8');
-    //
-    // console.log(this.web3.eth.accounts.wallet);
-    // localStorage.setItem('current_user', 'arvind');
-    //
-    // this.web3.eth.accounts.wallet.save(PASSWORD);
   }
 
   getAccountAddress () {
-    return this.web3.eth.accounts.wallet[0].address
+    return _.get(this.web3, 'eth.accounts.wallet[0].address');
+  }
+
+  addNewWallet (pvtKey, password) {
+    try {
+      this.web3.eth.accounts.wallet.add(pvtKey);
+      this.web3.eth.accounts.wallet.save(password);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false
+    }
+
+  }
+
+  isAccountLoaded () {
+    const address = _.get(this.web3, 'eth.accounts.wallet[0].address');
+
+    return address && address.length > 0;
+  }
+
+  getWalletObjectFromPrivateKey (pvtKey) {
+
+    try {
+      return this.web3.eth.accounts.privateKeyToAccount(pvtKey);
+    } catch (e) {
+      return false;
+    }
+
   }
 
   getGasPriceInEth () {
@@ -38,7 +59,11 @@ class Web3Helper {
   }
 
   getEthersWallet () {
-    const privateKey = this.web3.eth.accounts.wallet[0].privateKey
+    const privateKey = _.get(this.web3, 'eth.accounts.wallet[0].privateKey');
+
+    if (!privateKey) {
+      return null;
+    }
 
     return new ethers.Wallet(privateKey);
   }

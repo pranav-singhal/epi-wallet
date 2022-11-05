@@ -1,4 +1,6 @@
 import Web3 from "../helpers/Web3";
+import * as PushAPI from "@pushprotocol/restapi";
+import {NOTIFICATION_CHANNEL} from "../components/OptInNotificationsButton";
 
 export const BASE_URL = 'https://wallet-api-a.herokuapp.com';
 
@@ -15,20 +17,36 @@ export const fetchMessages = (threadUser) => {
     .then(res => res.json())
 };
 
-export const userDetails = {
-  pranav: {
-    name: 'pranav',
-    address: '0xD7F1a592874bbe5d14c3f024c08b630e6De5A11B',
-    avatarLink: 'https://picsum.photos/id/1025/200/300.jpg'
-  },
-  arvind: {
-    name: 'arvind',
-    address: '0xE4928EEA34C76D351D4Ed58266DEbfA7A4b42519',
-    avatarLink: 'https://picsum.photos/id/237/200/300.jpg'
-  },
-  vendor: {
-    name: 'vendor',
-    address: '0xD4ea698DfCdf0ADDeAAe77A2d6584f822738cf67',
-    avatarLink: 'https://picsum.photos/id/238/200/300.jpg'
-  }
+export const getAllUsers = () => {
+  return fetch(`${BASE_URL}/users`)
+      .then(res => res.json());
+}
+
+export const createNewUser = ({username, address}) => {
+  return fetch(`${BASE_URL}/user`, {
+    method: 'POST',
+    body: JSON.stringify({
+      username,
+      address,
+      avatarLink: `https://picsum.photos/id/${Math.ceil(Math.random() *1000)}/200/300.jpg`
+    })
+  })
+  .then(res => res.json());
+}
+
+export const subscribeToNotifications = () => {
+  const signer = Web3.getEthersWallet();
+  const public_key = signer?.address;
+  return PushAPI.channels.subscribe({
+    signer,
+    channelAddress: `eip155:5:${NOTIFICATION_CHANNEL}`, // channel address in CAIP
+    userAddress: `eip155:5:${public_key}`, // user address in CAIP
+    onSuccess: () => {
+      console.log('opted in!');
+    },
+    onError: () => {
+      console.error('opt in error');
+    },
+    env: 'staging'
+  })
 }

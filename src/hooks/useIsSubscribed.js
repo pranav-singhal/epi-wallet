@@ -7,19 +7,22 @@ const useIsSubscribed = (public_key) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    PushAPI.user.getSubscriptions({
-      user: `eip155:5:${public_key}`, // user address in CAIP
-      env: 'staging'
-    })
-      .then(res => {
-        const channelArray = res.map(item => item?.channel);
-        if (Array.isArray(channelArray) && channelArray.includes(NOTIFICATION_CHANNEL)) {
-          setIsSubscribed(true);
-        }
+    if (public_key) {
+      PushAPI.user.getSubscriptions({
+        user: `eip155:5:${public_key}`, // user address in CAIP
+        env: 'staging'
       })
-      .finally(() => {
-        setIsLoading(false);
-      })
+          .then(res => {
+            const channelArray = res.map(item => item?.channel);
+            if (Array.isArray(channelArray) && channelArray.includes(NOTIFICATION_CHANNEL)) {
+              setIsSubscribed(true);
+            }
+          })
+          .finally(() => {
+            setIsLoading(false);
+          })
+    }
+
   }, [public_key])
 
   return [isLoading, isSubscribed, setIsSubscribed];

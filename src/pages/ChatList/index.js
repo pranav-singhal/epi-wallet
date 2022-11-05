@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Avatar, Badge, Col, Row } from "antd";
 import _ from "lodash";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { BASE_URL, userDetails } from "../../api";
+import { BASE_URL } from "../../api";
 
 const ChatList = (props) => {
   const [threadUsers, setThreadUsers] = useState([]);
@@ -30,7 +30,7 @@ const ChatList = (props) => {
     <div className="chat-list">
       <Row>
         {_.map(threadUsers, (threadUserName) => {
-          const threadUser = userDetails[threadUserName];
+          const threadUser = _.get(props, ['userDetails', threadUserName]);
           return (
             <Col span={24} key={threadUser.address}>
             <div
@@ -44,7 +44,7 @@ const ChatList = (props) => {
                   <Avatar src={chatItem.avatarLink} />
                 </Badge>
               ) : ( */}
-              <Avatar src={threadUser.avatarLink} />
+              <Avatar src={threadUser.avatar} />
               {/* )} */}
 
               <div className="chat-list-row__content">
