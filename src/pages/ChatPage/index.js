@@ -116,7 +116,7 @@ const ChatPage = ({ threadUser, startTransaction }) => {
             handleApprove={() => {
               startTransaction({
                 to: threadUser,
-                amount: _.parseInt(message.amount),
+                amount: parseFloat(message.amount),
                 transactionId: message.transactionId
               })
             }}

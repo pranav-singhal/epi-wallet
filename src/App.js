@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.scss";
 import "antd/dist/antd.css";
 import Dashboard from "./pages/Dashboard";
-import {Button, PageHeader, notification, Spin, Space, Typography} from "antd";
+import {Button, PageHeader, message} from "antd";
 import { QrcodeOutlined } from '@ant-design/icons'
 import ChatPage from "./pages/ChatPage";
 import QRCodeScanner from "./pages/QRCodeScanner";
@@ -11,7 +11,6 @@ import OptInNotificationsButton from "./components/OptInNotificationsButton";
 import { getNotifications, toTitleCase } from "./helpers";
 import {getAllUsers} from "./api";
 import Web3 from "./helpers/Web3";
-import ImportWallet from "./components/ImportWallet";
 import ImportWalletPage from "./pages/ImportWallet";
 import _ from "lodash";
 
@@ -23,8 +22,7 @@ const PAGES = {
   IMPORT_WALLET: 'import_wallet'
 };
 
-const PROJECT_NAME = "EPI";
-const { Text } = Typography;
+const PROJECT_NAME = "EPI Wallet";
 
 function App() {
   const [openPage, setOpenPage] = useState(PAGES.DASHBOARD);
@@ -53,24 +51,55 @@ function App() {
          .then(_res => {
            if (Array.isArray(_res) && _res.length > 0 ) {
              _.slice(_res, 0,2).map(_notificationObject => {
-               const message = JSON.parse(_notificationObject.message);
+               const notificationObject = JSON.parse(_notificationObject.message);
 
-               notification.open({
-                 message: _notificationObject.notification.title,
-                 description: (
-                   <div>
-                     from : {message.from}
-                     <br />
-                     amount: {message.amount}
-                     <br />
-                     createdAt: {message.createdAt}
-                   </div>
-                 ),
-                 onClick: () => {
-                   setSelectedChat(userDetails[message.from])
-                   setOpenPage(PAGES.CHAT_PAGE);
-                 }
-               })
+               if (notificationObject.type === 'request') {
+                 const dismissMessage = message.warning({
+                   content: (
+                     <span>
+                       <b>{toTitleCase(notificationObject.from)}</b> has requested <b>{notificationObject.amount}</b>{" "}
+                       <img
+                         className='no-background'
+                         src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023"
+                         alt=""
+                         style={{
+                           width: '18px',
+                           marginBottom: '3px'
+                         }}
+                       />
+                     </span>
+                   ),
+                   duration: 6,
+                   className: 'message-notification',
+                   onClick: () => {
+                     dismissMessage()
+                     setTransaction({
+                       to: _.get(userDetails, notificationObject.from),
+                       amount: notificationObject.amount,
+                       transactionId: notificationObject.transactionId
+                     });
+                     setOpenPage(PAGES.TRANSACTION_POPUP)
+                   }
+                 });
+               } else {
+                 message.success({
+                   content: (
+                     <span>
+                       <b>{toTitleCase(notificationObject.from)}</b> has sent <b>{notificationObject.amount}</b>{" "}
+                       <img
+                         className='no-background'
+                         src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023"
+                         alt=""
+                         style={{
+                           width: '18px',
+                           marginBottom: '3px'
+                         }}
+                       />
+                     </span>
+                   ),
+                   className: 'message-notification'
+                 });
+               }
              })
            }
 

@@ -28,10 +28,10 @@ const Account = (props) => {
   )
 }
 
-const PRECISION = 18;
+const PRECISION = 5;
 
 const TransactionPopup = (props) => {
-  const gas = 21000;
+  const gas = 30000;
   const [isLoading, setIsLoading] = useState(true);
   const [gasPrice, setGasPrice] = useState(0);
   const [isTransactionProcessing, setIsTransactionProcessing] = useState(false);

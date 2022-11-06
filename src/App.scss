@@ -44,3 +44,9 @@ img {
 img.no-background {
   background-color: unset;
 }
+
+.message-notification {
+  .ant-message-notice-content {
+    border-radius: 10px;
+  }
+}
