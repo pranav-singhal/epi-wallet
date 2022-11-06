@@ -4,7 +4,7 @@
  * @date 17/04/22
  */
 import React, { useEffect, useState } from "react";
-import {Avatar, Badge, Button, Col, Divider, Row, Space} from "antd";
+import {Avatar, Badge, Button, Col, Divider, Row, Space, Spin} from "antd";
 import _ from "lodash";
 import {
   ArrowDownOutlined,
@@ -108,6 +108,16 @@ const Dashboard = (props) => {
       ending = fullAddress.slice(-6)
 
     return `${beginning}...${ending}`
+  }
+
+  if (_.isEmpty(currentUserDetails)) {
+    return (
+      <div className='fullpage-loader'>
+        <Space size="middle">
+          <Spin size='large'/>
+        </Space>
+      </div>
+    )
   }
 
   return (

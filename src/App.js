@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.scss";
 import "antd/dist/antd.css";
 import Dashboard from "./pages/Dashboard";
-import {Button, PageHeader, notification, Spin, Space, Typography, Avatar} from "antd";
+import {Button, PageHeader, notification, Spin, Space, Typography} from "antd";
 import { QrcodeOutlined } from '@ant-design/icons'
 import ChatPage from "./pages/ChatPage";
 import QRCodeScanner from "./pages/QRCodeScanner";
@@ -12,7 +12,7 @@ import { getNotifications, toTitleCase } from "./helpers";
 import {getAllUsers} from "./api";
 import Web3 from "./helpers/Web3";
 import ImportWallet from "./components/ImportWallet";
-import ImportWalletPage from "./components/ImportWalletPage";
+import ImportWalletPage from "./pages/ImportWallet";
 import _ from "lodash";
 
 const PAGES = {
@@ -33,14 +33,13 @@ function App() {
   const isWalletLoaded = Web3.isAccountLoaded();
 
   useEffect(() => {
-      getAllUsers()
-          .then(res => {
-              setUserDetails(res?.users);
-          })
-          .finally(() => {
-              setIsUsersLoading(false);
-          })
-
+    getAllUsers()
+      .then(res => {
+          setUserDetails(res?.users);
+      })
+      .finally(() => {
+          setIsUsersLoading(false);
+      })
   }, []);
 
 
@@ -139,9 +138,6 @@ function App() {
           }}
         />;
 
-        case PAGES.IMPORT_WALLET:
-            return <ImportWalletPage userDetails={userDetails} />;
-
       case PAGES.QR_CODE_SCANNER:
         return (
           <QRCodeScanner
@@ -201,6 +197,12 @@ function App() {
     );
   }
 
+  if (!Web3.isAccountLoaded()) {
+    return (
+      <ImportWalletPage userDetails={userDetails} />
+    );
+  }
+
   return (
     <div className="app">
       <PageHeader
@@ -222,12 +224,6 @@ function App() {
             size='large'
             onClick={() => setOpenPage(PAGES.QR_CODE_SCANNER)}
           />,
-          !Web3.isAccountLoaded() &&
-            <ImportWallet
-              setOpenPage={() => {
-                setOpenPage(PAGES.IMPORT_WALLET)
-              }}
-            />,
           <OptInNotificationsButton />
         ] : []}
       />

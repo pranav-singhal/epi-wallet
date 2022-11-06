@@ -29,13 +29,17 @@ class Web3Helper {
     return balanceInWei;
   }
 
+  _trimPrivateKey (privateKey) {
+    return _.join(_.split(privateKey, ' '), '')
+  }
+
   getAccountAddress () {
     return _.get(this.web3, 'eth.accounts.wallet[0].address');
   }
 
   addNewWallet (pvtKey, password) {
     try {
-      this.web3.eth.accounts.wallet.add(pvtKey);
+      this.web3.eth.accounts.wallet.add(this._trimPrivateKey(pvtKey));
       this.web3.eth.accounts.wallet.save(password);
       return true;
     } catch (e) {
@@ -52,9 +56,8 @@ class Web3Helper {
   }
 
   getWalletObjectFromPrivateKey (pvtKey) {
-
     try {
-      return this.web3.eth.accounts.privateKeyToAccount(pvtKey);
+      return this.web3.eth.accounts.privateKeyToAccount(this._trimPrivateKey(pvtKey))
     } catch (e) {
       return false;
     }
