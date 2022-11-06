@@ -4,27 +4,32 @@
  * @date 24/10/22
  */
 import React, {useEffect, useState} from 'react'
-import {Avatar, Button, Descriptions, Spin, Space} from "antd";
+import {Avatar, Button, Descriptions, Spin, Space, Row, Col} from "antd";
 import Web3 from "../../helpers/Web3";
 import _ from "lodash";
+import {toTitleCase} from "../../helpers";
 
 const Account = (props) => {
   const {name, address, avatar} = props;
 
   return (
-    <div
+    <Row
       className="user-account"
     >
-      <Avatar src={avatar} />
-      <div className="user-account__content">
-        <div className="user-account__content-name">
-          {name}
+      <Col span={4}>
+        <Avatar src={avatar} />
+      </Col>
+      <Col span={20}>
+        <div className="user-account__content">
+          <div className="user-account__content-name">
+            {toTitleCase(name)}
+          </div>
+          <div className="user-account__content-address">
+            {address}
+          </div>
         </div>
-        <div className="user-account__content-address">
-          {address}
-        </div>
-      </div>
-    </div>
+      </Col>
+    </Row>
   )
 }
 
