@@ -9,6 +9,7 @@ import _ from "lodash";
 import {
   ArrowDownOutlined,
   ArrowRightOutlined,
+  DownOutlined,
   LinkOutlined
 } from "@ant-design/icons";
 import { BASE_URL } from "../../api";
@@ -68,8 +69,8 @@ const ChatList = (props) => {
         {_.map(threadUsers, (threadUserName) => {
           const threadUser = _.get(props, ['userDetails', threadUserName]);
           return (
-              <Col span={24} key={threadUser.address}>
-                <AttachBadge showBadge={threadUser.user_type === 'vendor'}>
+            <Col span={24} key={threadUser.address}>
+              <AttachBadge showBadge={threadUser.user_type === 'vendor'}>
                 <div
                   className="chat-list-row"
                   onClick={() => {
@@ -89,8 +90,8 @@ const ChatList = (props) => {
                     <ArrowRightOutlined />
                   </div>
                 </div>
-                </AttachBadge>
-              </Col>
+              </AttachBadge>
+            </Col>
           )
         })}
       </Row>
@@ -143,6 +144,10 @@ const Dashboard = (props) => {
 
   return (
     <>
+      <div className='chain-switcher'>
+        <span>Sepolia Test Network</span>
+        <DownOutlined />
+      </div>
       <div className='wallet-info'>
         <div className='wallet-info__name'>
           <Avatar size={64} src={currentUserDetails.avatar} />
