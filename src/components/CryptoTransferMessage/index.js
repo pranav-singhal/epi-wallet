@@ -6,11 +6,12 @@
 import classNames from "classnames";
 import moment from "moment";
 import {CheckCircleOutlined, ClockCircleOutlined, LinkOutlined} from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, message as antdMessage } from "antd";
 import _ from 'lodash';
 import React, {useEffect, useState} from "react";
 import Web3, {BLOCK_EXPLORER_BASE_URL} from "../../helpers/Web3";
 import {BASE_URL} from "../../api";
+import {toTitleCase} from "../../helpers";
 const MESSAGETYPES = {
   SENT: 'sent',
   RECIEVED: 'recieved'
@@ -45,13 +46,22 @@ const CryptoTransferMessage = (props) => {
     const interval = setInterval(() => {
       Web3.checkIfMined(message.hash)
         .then((isMined) => {
-          if (!isMined) {
+          if (!isMined || messageStatus !== 'pending') {
             return;
           }
 
           clearInterval(interval);
 
           setMessageStatus('completed');
+
+          antdMessage.success({
+            content: (
+              <span>
+                Transaction to send <b>{message.amount}</b> ETH to <b>{toTitleCase(message.to)}</b> has been confirmed.
+              </span>
+            ),
+            className: 'message-notification'
+          })
 
           const myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
