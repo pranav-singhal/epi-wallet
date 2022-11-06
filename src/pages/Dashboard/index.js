@@ -4,14 +4,15 @@
  * @date 17/04/22
  */
 import React, { useEffect, useState } from "react";
-import {Avatar, Badge, Button, Col, Divider, Row, Space, Spin} from "antd";
+import {Avatar, Badge, Button, Col, Divider, Row, Skeleton, Space, Spin} from "antd";
 import _ from "lodash";
 import {
   ArrowDownOutlined,
   ArrowRightOutlined,
+  LinkOutlined
 } from "@ant-design/icons";
 import { BASE_URL } from "../../api";
-import Web3 from "../../helpers/Web3";
+import Web3, {BLOCK_EXPLORER_BASE_URL} from "../../helpers/Web3";
 import {toTitleCase} from "../../helpers";
 
 const AttachBadge = (props) => {
@@ -28,27 +29,44 @@ const AttachBadge = (props) => {
 
 const ChatList = (props) => {
   const [threadUsers, setThreadUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // TODO - add new message count - not sure about how to do it
-    fetch(`${BASE_URL}/threads?sender=${localStorage.getItem('current_user')}`, {
+    const fetchPromise = fetch(`${BASE_URL}/threads?sender=${localStorage.getItem('current_user')}`, {
       headers: {
         'Content-Type': 'application/json'
       }
-
     })
       .then(res => res.json())
       .then(res => {
         setThreadUsers(res?.threads || []);
       });
+
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => resolve(), 1500);
+    });
+
+    Promise.all([fetchPromise, timeoutPromise])
+      .then(() => {
+        setIsLoading(false);
+      })
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="chat-list-loading">
+        <Skeleton active avatar paragraph={{ rows: 1 }} />
+        <Skeleton active avatar paragraph={{ rows: 1 }} />;
+      </div>
+    )
+  }
 
   return (
     <div className="chat-list">
       <Row>
         {_.map(threadUsers, (threadUserName) => {
           const threadUser = _.get(props, ['userDetails', threadUserName]);
-          console.log('ITLY', threadUser);
           return (
               <Col span={24} key={threadUser.address}>
                 <AttachBadge showBadge={threadUser.user_type === 'vendor'}>
@@ -92,11 +110,15 @@ const Dashboard = (props) => {
   }
 
   useEffect(() => {
+    if (_.isEmpty(props.userDetails)) {
+      return;
+    }
+
     updateAccountBalanceInEth();
 
     const currentUser = localStorage.getItem('current_user');
     setCurrentUserDetails(props.userDetails[currentUser]);
-  }, []);
+  }, [props.userDetails]);
 
   const getAddress = () => {
     if (_.isEmpty(currentUserDetails)) {
@@ -112,10 +134,9 @@ const Dashboard = (props) => {
 
   if (_.isEmpty(currentUserDetails)) {
     return (
-      <div className='fullpage-loader'>
-        <Space size="middle">
-          <Spin size='large'/>
-        </Space>
+      <div className='wallet-info-loading wallet-info'>
+        <Skeleton.Avatar active size={64} />
+        <Skeleton active title />
       </div>
     )
   }
@@ -128,12 +149,22 @@ const Dashboard = (props) => {
           <div>
             {toTitleCase(currentUserDetails.name)}
           </div>
-          <div>
-            {_.toUpper(getAddress())}
+          <div
+            className='wallet-info__name-address'
+            onClick={() => {
+              window.open(`${BLOCK_EXPLORER_BASE_URL}/address/${currentUserDetails.address}`)
+            }}
+          >
+            <div>
+              {_.toUpper(getAddress())}
+            </div>
+            <div>
+              <LinkOutlined />
+            </div>
           </div>
         </div>
         <div className='wallet-info__balance'>
-          <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023" alt="" style={{width: 28}}/>
+          <img className='no-background' src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023" alt="" style={{width: 28}}/>
           <div>
             {accountBalance.toFixed(5)}
           </div>

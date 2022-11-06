@@ -5,11 +5,11 @@
  */
 import classNames from "classnames";
 import moment from "moment";
-import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import {CheckCircleOutlined, ClockCircleOutlined, LinkOutlined} from "@ant-design/icons";
 import { Button } from "antd";
 import _ from 'lodash';
-import {useEffect, useState} from "react";
-import Web3 from "../../helpers/Web3";
+import React, {useEffect, useState} from "react";
+import Web3, {BLOCK_EXPLORER_BASE_URL} from "../../helpers/Web3";
 import {BASE_URL} from "../../api";
 const MESSAGETYPES = {
   SENT: 'sent',
@@ -35,6 +35,7 @@ const currentUser = localStorage.getItem('current_user');
 const CryptoTransferMessage = (props) => {
   const { crypto = "ETH", message } = props;
   const [messageStatus, setMessageStatus] = useState(message.status)
+  const showExplorerLink = !_.isEmpty(message.hash);
 
   useEffect(() => {
     if (message.status !== 'pending' || _.isEmpty(message.hash)) {
@@ -91,13 +92,28 @@ const CryptoTransferMessage = (props) => {
         </div>
 
         <div className="crypto-message-card__footer">
-          <div className="crypto-message-card__footer-status">
+          <div
+            className="crypto-message-card__footer-status"
+            onClick={() => {
+              if (!showExplorerLink) {
+                return;
+              }
+
+              window.open(`${BLOCK_EXPLORER_BASE_URL}/tx/${message.hash}`)
+            }}
+          >
             {messageStatus === "completed" ? (
               <CheckCircleOutlined />
             ) : (
               <ClockCircleOutlined />
             )}
             <span>{getMessageStatus(messageStatus)}</span>
+            {
+              showExplorerLink &&
+                <div>
+                  <LinkOutlined />
+                </div>
+            }
           </div>
           <div className="crypto-message-card__footer-timestamp">
             {moment(parseInt(message.createdAt)).fromNow()}

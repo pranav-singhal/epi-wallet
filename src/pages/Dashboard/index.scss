@@ -26,6 +26,10 @@
   }
 }
 
+.chat-list-loading {
+  padding: 20px 15px;
+}
+
 .wallet-info {
   display: flex;
   flex-direction: column;
@@ -41,12 +45,16 @@
     gap: 2px;
     align-items: center;
 
-    :first-child {
+    .ant-avatar {
       margin-bottom: 4px;
     }
 
-    :last-child {
+    &-address {
+      cursor: pointer;
       font-size: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
   }
 
@@ -58,6 +66,7 @@
     flex-direction: row;
     gap: 8px;
     align-items: center;
+    margin-left: -4px;
   }
 
   &__divider {
@@ -76,10 +85,25 @@
       flex-direction: column;
       gap: 4px;
       align-items: center;
+      width: 47px;
 
       div {
         font-size: 12px;
       }
     }
+  }
+}
+
+.wallet-info-loading {
+  .ant-skeleton-title {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ant-skeleton-paragraph {
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 60%;
   }
 }

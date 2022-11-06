@@ -2,7 +2,7 @@ import Web3 from "../helpers/Web3";
 import * as PushAPI from "@pushprotocol/restapi";
 import {NOTIFICATION_CHANNEL} from "../components/OptInNotificationsButton";
 
-export const BASE_URL = 'https://wallet-api-a.herokuapp.com';
+export const BASE_URL = 'https://wallet-api.consolelabs.in';
 
 export const getCurrentUser = () => {
   return localStorage.getItem('current_user');

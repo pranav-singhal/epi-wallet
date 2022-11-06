@@ -28,7 +28,6 @@ const { Text } = Typography;
 
 function App() {
   const [openPage, setOpenPage] = useState(PAGES.DASHBOARD);
-  const [isUsersLoading, setIsUsersLoading] = useState(true);
   const [userDetails, setUserDetails] = useState({});
   const isWalletLoaded = Web3.isAccountLoaded();
 
@@ -36,9 +35,6 @@ function App() {
     getAllUsers()
       .then(res => {
           setUserDetails(res?.users);
-      })
-      .finally(() => {
-          setIsUsersLoading(false);
       })
   }, []);
 
@@ -48,7 +44,11 @@ function App() {
        return;
      }
 
+     let isNextCallAllowed = true;
+
      const tick = () => {
+       isNextCallAllowed = false;
+
        getNotifications(Web3.getAccountAddress())
          .then(_res => {
            if (Array.isArray(_res) && _res.length > 0 ) {
@@ -73,6 +73,8 @@ function App() {
                })
              })
            }
+
+           isNextCallAllowed = true;
          })
          .catch((err) => {
            console.error(err);
@@ -83,8 +85,9 @@ function App() {
      if (isWalletLoaded) {
        if (!window.notificationPoll) {
            window.notificationPoll = setInterval(() => {
+             if (isNextCallAllowed) {
                tick();
-
+             }
            }, 5000)
        }
      }
@@ -185,16 +188,6 @@ function App() {
 
   const shouldShowQRCode = () => {
     return openPage === PAGES.DASHBOARD;
-  }
-
-  if (isUsersLoading) {
-    return (
-      <div className='root-loader'>
-        <Space size="middle">
-          <Spin size='large'/>
-        </Space>
-      </div>
-    );
   }
 
   if (!Web3.isAccountLoaded()) {

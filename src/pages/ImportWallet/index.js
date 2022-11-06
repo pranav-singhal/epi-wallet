@@ -74,8 +74,14 @@ const ImportWalletPage = ({userDetails}) => {
               <Input.Password />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit" loading={isSubmitting} disabled={isSubmitting} >
-                    Submit
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                  shape='round'
+                >
+                    Import
                 </Button>
             </Form.Item>
           </Form>

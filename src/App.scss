@@ -36,3 +36,11 @@
   justify-content: space-around;
   height: 100%;
 }
+
+img {
+  background-color: #edecec;
+}
+
+img.no-background {
+  background-color: unset;
+}
