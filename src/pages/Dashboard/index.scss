@@ -1,0 +1,85 @@
+.chat-list {
+  &-row {
+    padding: 20px 15px;
+    border-bottom: 1px solid rgb(235, 237, 240);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &__content {
+      margin-left: 20px;
+
+      &-address {
+        font-size: 8px;
+      }
+    }
+
+    &__icon {
+      margin-left: auto;
+    }
+
+    &:hover {
+      border-color: #1890ff;
+      cursor: pointer;
+    }
+  }
+}
+
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  height: 50%;
+  justify-content: center;
+
+  &__name {
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+
+    :first-child {
+      margin-bottom: 4px;
+    }
+
+    :last-child {
+      font-size: 10px;
+    }
+  }
+
+  &__balance {
+    font-size: 24px;
+    font-weight: 600;
+
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__divider {
+    margin-top: 24px !important;
+    margin-bottom: 8px !important;
+  }
+
+  &__actions {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 38px;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+
+      div {
+        font-size: 12px;
+      }
+    }
+  }
+}

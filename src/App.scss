@@ -1,5 +1,5 @@
 @import "components/CryptoTransferMessage";
-@import "pages/ChatList";
+@import "pages/Dashboard";
 @import "pages/ChatPage";
 @import "pages/TransactionPopup";
 
@@ -22,6 +22,12 @@
   max-height: 88%;
   padding: 10px;
   flex-grow: 1;
+}
+
+.root-loader {
+  display: flex;
+  justify-content: space-around;
+  height: 100vh;
 }
 
 .fullpage-loader {

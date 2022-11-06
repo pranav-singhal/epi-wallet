@@ -19,6 +19,16 @@ class Web3Helper {
     this.web3.eth.accounts.wallet.load(PASSWORD)
   }
 
+  async getAccountBalance (address, unit = 'wei') {
+    const balanceInWei = await this?.web3?.eth?.getBalance(address);
+
+    if (unit === 'eth') {
+      return this.web3?.utils?.fromWei(balanceInWei)
+    }
+
+    return balanceInWei;
+  }
+
   getAccountAddress () {
     return _.get(this.web3, 'eth.accounts.wallet[0].address');
   }

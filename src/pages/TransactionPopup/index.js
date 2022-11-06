@@ -28,7 +28,7 @@ const Account = (props) => {
   )
 }
 
-const PRECISION = 4;
+const PRECISION = 18;
 
 const TransactionPopup = (props) => {
   const gas = 21000;
@@ -85,19 +85,19 @@ const TransactionPopup = (props) => {
         <Descriptions.Item label='Gas'>
           <div className='eth-amounts'>
             <span>{totalGasAmount.toPrecision(PRECISION)}</span>
-            <span>Eth</span>
+            <span>ETH</span>
           </div>
         </Descriptions.Item>
         <Descriptions.Item label='Value' contentStyle={{fontSize: '20px'}}>
           <div className='eth-amounts'>
             <span>{amount.toPrecision(PRECISION)}</span>
-            <span>Eth</span>
+            <span>ETH</span>
           </div>
         </Descriptions.Item>
         <Descriptions.Item label='Total' contentStyle={{fontSize: '20px'}}>
           <div className='eth-amounts'>
             <span>{(amount + totalGasAmount).toPrecision(PRECISION)}</span>
-            <span>Eth</span>
+            <span>ETH</span>
           </div>
         </Descriptions.Item>
       </Descriptions>

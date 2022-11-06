@@ -93,8 +93,20 @@ const ChatPage = ({ threadUser, startTransaction }) => {
           onChange={setNewMessageAmount}
           value={newMessageAmount}
         />
-        <Button type="primary" onClick={handleRequest} >Request</Button>
-        <Button type="primary" onClick={() => {handleSend()}}>Send</Button>
+        <Button
+          type="primary"
+          onClick={handleRequest}
+          disabled={!_.isNumber(newMessageAmount) || newMessageAmount <= 0}
+        >
+          Request
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => {handleSend()}}
+          disabled={!_.isNumber(newMessageAmount) || newMessageAmount <= 0}
+        >
+          Send
+        </Button>
       </div>
       <div className="chat-page-messages" ref={messagesElement}>
         {_.map(_.orderBy(messagesArray, ['createdAt'], ['asc']), (message) => (
