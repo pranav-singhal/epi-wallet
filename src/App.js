@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./App.scss";
 import "antd/dist/antd.css";
 import Dashboard from "./pages/Dashboard";
@@ -11,7 +12,6 @@ import OptInNotificationsButton from "./components/OptInNotificationsButton";
 import { getNotifications, toTitleCase } from "./helpers";
 import {getAllUsers} from "./api";
 import Web3 from "./helpers/Web3";
-import ImportWalletPage from "./pages/ImportWallet";
 import _ from "lodash";
 
 const PAGES = {
@@ -28,6 +28,7 @@ function App() {
   const [openPage, setOpenPage] = useState(PAGES.DASHBOARD);
   const [userDetails, setUserDetails] = useState({});
   const isWalletLoaded = Web3.isAccountLoaded();
+    const navigate = useNavigate();
 
   useEffect(() => {
     getAllUsers()
@@ -219,11 +220,11 @@ function App() {
     return openPage === PAGES.DASHBOARD;
   }
 
-  if (!Web3.isAccountLoaded()) {
-    return (
-      <ImportWalletPage userDetails={userDetails} />
-    );
-  }
+    useEffect(() => {
+        if (!Web3.isAccountLoaded()) {
+            navigate("/new")
+        }
+    }, []);
 
   return (
     <div className="app">

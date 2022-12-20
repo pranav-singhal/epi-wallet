@@ -4,7 +4,7 @@
  * @date 17/04/22
  */
 import React, { useEffect, useState } from "react";
-import {Avatar, Badge, Button, Col, Divider, Row, Skeleton, Space, Spin} from "antd";
+import {Avatar, Badge, Button, Col, Divider, Row, Skeleton} from "antd";
 import _ from "lodash";
 import {
   ArrowDownOutlined,
@@ -12,7 +12,7 @@ import {
   DownOutlined,
   LinkOutlined
 } from "@ant-design/icons";
-import { BASE_URL } from "../../api";
+import {BASE_URL, getAllUsers} from "../../api";
 import Web3, {BLOCK_EXPLORER_BASE_URL} from "../../helpers/Web3";
 import {toTitleCase} from "../../helpers";
 
@@ -103,6 +103,13 @@ const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
 
+  const [userDetails, setUserDetails] = useState(null)
+
+  useEffect(() => {
+    getAllUsers()
+        .then(res => setUserDetails(res?.users))
+  }, []);
+
   const updateAccountBalanceInEth = () => {
     Web3.getAccountBalance(Web3.getAccountAddress(), 'eth')
       .then(res => {
@@ -111,15 +118,15 @@ const Dashboard = (props) => {
   }
 
   useEffect(() => {
-    if (_.isEmpty(props.userDetails)) {
+    if (_.isEmpty(userDetails)) {
       return;
     }
 
     updateAccountBalanceInEth();
 
     const currentUser = localStorage.getItem('current_user');
-    setCurrentUserDetails(props.userDetails[currentUser]);
-  }, [props.userDetails]);
+    setCurrentUserDetails(userDetails[currentUser]);
+  }, [userDetails]);
 
   const getAddress = () => {
     if (_.isEmpty(currentUserDetails)) {

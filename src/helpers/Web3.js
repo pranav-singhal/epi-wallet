@@ -67,6 +67,15 @@ class Web3Helper {
 
   }
 
+  createNewWalletWithEntropy () {
+    try {
+      return this.web3.eth.accounts.create()
+    }
+    catch (e) {
+      return false
+    }
+  }
+
   getGasPriceInEth () {
     return this.web3.eth.getGasPrice()
       .then((priceInWei) => {
@@ -139,11 +148,9 @@ class Web3Helper {
   checkIfMined (hash) {
     return this.web3.eth.getTransactionReceipt(hash)
       .then((receipt) => {
-        if (!receipt) {
-          return false;
-        }
+        return receipt;
 
-        return true;
+
       })
   }
 }
