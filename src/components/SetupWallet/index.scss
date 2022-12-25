@@ -1,0 +1,44 @@
+.setup-wallet-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  padding: 30px;
+  background: #ececec;
+
+  .wallet-options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: space-around;
+    height: 90%;
+
+    .wallet-option {
+      background-color: white;
+      height: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+
+      span:first-child {
+        font-size: 120px;
+        color: rgba(0, 0, 0, 0.45);
+      }
+
+      border: white 3px solid;
+    }
+
+    .selected-option {
+      border-color: #1890ff;
+    }
+  }
+
+  .setup-wallet-submit {
+    margin-top: 20px;
+    width: 100%;
+  }
+}

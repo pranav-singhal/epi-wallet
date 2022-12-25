@@ -19,19 +19,19 @@ const router = createBrowserRouter(
             element: <App />
         },
         {
-            path: "/new",
+            path: "/wallet/new",
             element: <SetupWallet />
         },
         {
-            path: "/create",
+            path: "/wallet/create",
             element: <CreateWallet />
         },
         {
-            path: "import",
+            path: "/wallet/import",
             element: <ImportWalletPage />
         },
         {
-            path: "dashboard",
+            path: "/dashboard",
             element: <Dashboard />
         }
     ]
