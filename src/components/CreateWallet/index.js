@@ -58,6 +58,11 @@ const CreateWallet = () => {
             A <b>Private Key</b> will be auto generated for you, when you create a new wallet using the following form.
           </Paragraph>
           <Paragraph>
+            Wallet will use the <b>Private Key</b> generated here, and link it with the provided <b>username</b>.
+            Later anybody can use your username to send or request assets to/from you. Without the hassle of sharing
+            the public address through other messaging channels.
+          </Paragraph>
+          <Paragraph>
             You will later be able to export that private key from the <b>Settings</b> section.
           </Paragraph>
         </div>
