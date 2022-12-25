@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Typography } from "antd";
+import {Button, Form, Input, PageHeader, Typography} from "antd";
 import _ from "lodash";
 import Web3, { PASSWORD } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 const { Title, Paragraph } = Typography;
+
+const PROJECT_NAME = "EPI Wallet";
 
 const ImportWalletPage = ({ userDetails }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,6 +31,10 @@ const ImportWalletPage = ({ userDetails }) => {
 
   return (
     <div className="import-wallet">
+      <PageHeader
+        avatar={{ src: "https://i.imgur.com/ZAE8cku.png" }}
+        title={PROJECT_NAME}
+      />
       <div className="import-wallet-container">
         <div className="import-wallet-container-head">
           <ImportOutlined />

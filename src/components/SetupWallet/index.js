@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Typography } from "antd";
+import { Button, PageHeader, Typography } from "antd";
 import classnames from "classnames";
-import _ from 'lodash';
+import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { ImportOutlined, PlusSquareOutlined } from "@ant-design/icons";
 
@@ -9,12 +9,18 @@ const { Title } = Typography;
 const IMPORT_OPTION = "import";
 const CREATE_NEW_WALLET = "create_new_wallet";
 
+const PROJECT_NAME = "EPI Wallet";
+
 const SetupWallet = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const navigate = useNavigate();
 
   return (
     <div className="setup-wallet-wrapper">
+      <PageHeader
+        avatar={{ src: "https://i.imgur.com/ZAE8cku.png" }}
+        title={PROJECT_NAME}
+      />
       <div className="wallet-options-container">
         <div
           className={classnames("wallet-option", {
@@ -50,11 +56,11 @@ const SetupWallet = () => {
           }
 
           if (selectedOption === IMPORT_OPTION) {
-            navigate('/wallet/import')
+            navigate("/wallet/import");
           }
 
           if (selectedOption === CREATE_NEW_WALLET) {
-            navigate('/wallet/create')
+            navigate("/wallet/create");
           }
         }}
       >

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Button, Form, Input, Typography} from "antd";
+import {Button, Form, Input, PageHeader, Typography} from "antd";
 import _ from "lodash";
 import Web3, { PASSWORD } from "../../helpers/Web3";
 import {
@@ -11,6 +11,8 @@ import {
 import {PlusSquareOutlined} from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
+
+const PROJECT_NAME = "EPI Wallet";
 
 const CreateWallet = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -46,6 +48,10 @@ const CreateWallet = () => {
 
   return (
     <div className="create-wallet">
+      <PageHeader
+        avatar={{ src: "https://i.imgur.com/ZAE8cku.png" }}
+        title={PROJECT_NAME}
+      />
       <div className="create-wallet-container">
         <div className="create-wallet-container-head">
           <PlusSquareOutlined />
