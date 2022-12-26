@@ -6,54 +6,39 @@
 import {Button, InputNumber, Space, Spin} from "antd";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import { BASE_URL, getCurrentUser, fetchMessages } from "../../api";
+import { fetchMessages, sendMessageForRequest } from "../../api";
 import CryptoTransferMessage from "../../components/CryptoTransferMessage";
+import {useNavigate} from "react-router-dom";
+import useQuery from "../../hooks/useQuery";
 
-const ChatPage = ({ threadUser, startTransaction }) => {
-  const { name: threadUserName } = threadUser;
+const ChatPage = () => {
   const [newMessageAmount, setNewMessageAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const messagesElement = useRef(null);
   const [messagesArray, setMessageArray] = useState();
+  const navigate = useNavigate();
+  const query = useQuery();
+  const to = query.get('to');
 
   useEffect(() => {
-    fetchMessages(threadUserName)
+    fetchMessages(to)
       .then((res) => {
         setMessageArray(res.messages);
         setIsLoading(false);
       })
   }, []);
 
-  const handleSend = () => {
-    startTransaction({
-      to: threadUser,
-      amount: newMessageAmount
-    })
-  }
+  const handleSend = () => navigate(`/transaction?to=${to}&amount=${newMessageAmount}`)
 
   const handleRequest = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    fetch(`${BASE_URL}/message`, {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({
-        "type": "request",
-        "sender": getCurrentUser(),
-        "recipient": threadUserName,
-        "txDetails": {
-          "amount": newMessageAmount
-        }
-      }),
+    sendMessageForRequest({
+      newMessageAmount, threadUserName: to
     })
-    .then(response => response.json())
     .then(() => {
       setNewMessageAmount(0);
-      return fetchMessages(threadUserName)
+      return fetchMessages(to)
     })
-    .then((res) => {
-      setMessageArray(res.messages)
-    })
+    .then((res) => setMessageArray(res.messages))
     .catch(error => console.error(error));
   }
 
@@ -113,13 +98,7 @@ const ChatPage = ({ threadUser, startTransaction }) => {
           <CryptoTransferMessage
             key={message.id}
             message={message}
-            handleApprove={() => {
-              startTransaction({
-                to: threadUser,
-                amount: parseFloat(message.amount),
-                transactionId: message.transactionId
-              })
-            }}
+            handleApprove={() => navigate(`/transaction?to=${to}&amount=${parseFloat(message.amount)}&transactionId=${message.transactionId}`)}
           />
         ))}
       </div>

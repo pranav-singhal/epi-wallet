@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {Button, Form, Input, PageHeader, Typography} from "antd";
 import _ from "lodash";
 import Web3, { PASSWORD } from "../../helpers/Web3";
 import {
   createNewUser,
-  getAllUsers,
   subscribeToNotifications,
 } from "../../api";
 import {PlusSquareOutlined} from "@ant-design/icons";
+import useUserDetails from "../../hooks/useUserDetails";
 
 const { Title, Paragraph } = Typography;
 
 const PROJECT_NAME = "EPI Wallet";
 
 const CreateWallet = () => {
-  const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    getAllUsers().then((res) => setUserDetails(res?.users));
-  }, []);
+  const [userDetails] = useUserDetails();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const setWallet = (values) => {

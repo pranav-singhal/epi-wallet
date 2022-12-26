@@ -11,6 +11,11 @@ import CreateWallet from "./components/CreateWallet";
 import Dashboard from "./pages/Dashboard";
 import ImportWalletPage from "./pages/ImportWallet";
 import SetupWallet from "./components/SetupWallet";
+import NewRequestPage from "./components/NewRequestPage";
+import QRCodeScanner from "./pages/QRCodeScanner";
+import ChatPage from "./pages/ChatPage";
+import {Transaction} from "ethers";
+import TransactionPopup from "./pages/TransactionPopup";
 
 const router = createBrowserRouter(
     [
@@ -33,7 +38,24 @@ const router = createBrowserRouter(
         {
             path: "/dashboard",
             element: <Dashboard />
+        },
+        {
+            path: "/request/new",
+            element: <NewRequestPage />
+        },
+        {
+            path: "/scan",
+            element: <QRCodeScanner />
+        },
+        {
+            path: "/chat",
+            element: <ChatPage />
+        },
+        {
+            path: "/transaction",
+            element: <TransactionPopup />
         }
+
     ]
 );
 

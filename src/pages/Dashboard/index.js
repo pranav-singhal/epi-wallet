@@ -15,6 +15,8 @@ import {
 import {BASE_URL, getAllUsers} from "../../api";
 import Web3, {BLOCK_EXPLORER_BASE_URL} from "../../helpers/Web3";
 import {toTitleCase} from "../../helpers";
+import {useNavigate} from "react-router-dom";
+import useUserDetails from "../../hooks/useUserDetails";
 
 const AttachBadge = (props) => {
   if (!props.showBadge) {
@@ -31,6 +33,8 @@ const AttachBadge = (props) => {
 const ChatList = (props) => {
   const [threadUsers, setThreadUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const [userDetails] = useUserDetails();
 
   useEffect(() => {
     // TODO - add new message count - not sure about how to do it
@@ -41,7 +45,7 @@ const ChatList = (props) => {
     })
       .then(res => res.json())
       .then(res => {
-        setThreadUsers(res?.threads || []);
+        setThreadUsers(_.compact(res?.threads) || []);
       });
 
     const timeoutPromise = new Promise((resolve) => {
@@ -63,52 +67,55 @@ const ChatList = (props) => {
     )
   }
 
-  return (
-    <div className="chat-list">
-      <Row>
-        {_.map(threadUsers, (threadUserName) => {
-          const threadUser = _.get(props, ['userDetails', threadUserName]);
-          return (
-            <Col span={24} key={threadUser.address}>
-              <AttachBadge showBadge={threadUser.user_type === 'vendor'}>
-                <div
-                  className="chat-list-row"
-                  onClick={() => {
-                    props.openChat(threadUser);
-                  }}
-                >
-                  <Avatar src={threadUser.avatar} />
-                  <div className="chat-list-row__content">
-                    <div className="chat-list-row__content-name">
-                      {toTitleCase(threadUser.name)}
-                    </div>
-                    <div className="chat-list-row__content-address">
-                      {threadUser.address}
-                    </div>
-                  </div>
-                  <div className="chat-list-row__icon">
-                    <ArrowRightOutlined />
-                  </div>
-                </div>
-              </AttachBadge>
-            </Col>
-          )
-        })}
-      </Row>
-    </div>
-  );
+  if (userDetails) {
+    return (
+        <div className="chat-list">
+          <Row>
+            {_.map(threadUsers, (threadUserName) => {
+              const threadUser = _.get(userDetails, [threadUserName]);
+              return (
+                  <Col span={24} key={threadUser.address}>
+                    <AttachBadge showBadge={threadUser.user_type === 'vendor'}>
+                      <div
+                          className="chat-list-row"
+                          onClick={() => {
+                            navigate(`/chat?to=${threadUser.username}`)
+                          }}
+                      >
+                        <Avatar src={threadUser.avatar} />
+                        <div className="chat-list-row__content">
+                          <div className="chat-list-row__content-name">
+                            {toTitleCase(threadUser.name)}
+                          </div>
+                          <div className="chat-list-row__content-address">
+                            {threadUser.address}
+                          </div>
+                        </div>
+                        <div className="chat-list-row__icon">
+                          <ArrowRightOutlined />
+                        </div>
+                      </div>
+                    </AttachBadge>
+                  </Col>
+              )
+            })}
+          </Row>
+        </div>
+    );
+  }
+
 }
 
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
 
-  const [userDetails, setUserDetails] = useState(null)
+  const [userDetails] = useUserDetails(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    getAllUsers()
-        .then(res => setUserDetails(res?.users))
-  }, []);
+  const goToNewRequestPage = () => {
+    navigate('/request/new')
+  }
 
   const updateAccountBalanceInEth = () => {
     Web3.getAccountBalance(Web3.getAccountAddress(), 'eth')
@@ -182,7 +189,7 @@ const Dashboard = (props) => {
           </div>
         </div>
         <div className='wallet-info__actions'>
-          <div>
+          <div onClick={goToNewRequestPage}>
             <Button type="primary" icon={<ArrowDownOutlined />} shape='circle' />
             <div>
               Request

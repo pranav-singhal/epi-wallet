@@ -8,6 +8,9 @@ import {Avatar, Button, Descriptions, Spin, Space, Row, Col} from "antd";
 import Web3 from "../../helpers/Web3";
 import _ from "lodash";
 import {toTitleCase} from "../../helpers";
+import useUserDetails from "../../hooks/useUserDetails";
+import useQuery from "../../hooks/useQuery";
+import {useNavigate} from "react-router-dom";
 
 const Account = (props) => {
   const {name, address, avatar} = props;
@@ -40,6 +43,14 @@ const TransactionPopup = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [gasPrice, setGasPrice] = useState(0);
   const [isTransactionProcessing, setIsTransactionProcessing] = useState(false);
+  const [userDetails] = useUserDetails();
+  const query = useQuery();
+  let to = query.get('to');
+  to = _.get(userDetails, [to]);
+  const amount = parseFloat(query.get('amount'));
+  const transactionId = query.get('transactionId')
+  const qrId  = query.get('qrId');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => {
@@ -52,11 +63,10 @@ const TransactionPopup = (props) => {
     }, 1500)
   })
 
-  const { to, amount, transactionId, qrId } = props.transaction;
   const totalGasAmount = gas * gasPrice;
 
   const currentUser = localStorage.getItem('current_user');
-  const from = _.get(props, ['userDetails', currentUser]);
+  const from = _.get(userDetails, [currentUser]);
 
   if (isLoading) {
     return (
@@ -112,11 +122,9 @@ const TransactionPopup = (props) => {
           size='large'
           shape='round'
           loading={isTransactionProcessing}
-          onClick={() => {
-            setIsTransactionProcessing(true)
-            Web3.sendTransaction(to, amount, gas, transactionId, qrId)
-              .then(() => props.onDone())
-          }}
+          onClick={() => Web3.sendTransaction(to, amount, gas, transactionId, qrId)
+              .then(() => navigate(`/chat?to=${to?.username}`))
+        }
         >
           Confirm
         </Button>
@@ -124,7 +132,7 @@ const TransactionPopup = (props) => {
           type="default"
           size='large'
           shape='round'
-          onClick={props.onDone}
+          onClick={() => navigate(`/chat?to=${to?.username}`)}
         >
           Reject
         </Button>

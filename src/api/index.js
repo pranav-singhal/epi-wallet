@@ -50,3 +50,21 @@ export const subscribeToNotifications = () => {
     env: 'staging'
   })
 }
+
+export const sendMessageForRequest = ({newMessageAmount, threadUserName}) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  return fetch(`${BASE_URL}/message`, {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify({
+      "type": "request",
+      "sender": getCurrentUser(),
+      "recipient": threadUserName,
+      "txDetails": {
+        "amount": newMessageAmount
+      }
+    }),
+  })
+      .then(response => response.json())
+}
