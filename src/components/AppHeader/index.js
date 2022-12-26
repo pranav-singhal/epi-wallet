@@ -16,19 +16,17 @@ const AppHeader = ({
         onBack={onBack}
         title={title}
         subTitle={subtitle}
-        extra={
-            [
-                    <Button
-                        type="dashed"
-                        shape="circle"
-                        icon={<QrcodeOutlined />}
-                        size="large"
-                        onClick={() => navigate("/scan")}
-                    />,
-                    <OptInNotificationsButton />,
-                ]
-
-        }
+        extra={[
+            <Button
+                key="button"
+                type="dashed"
+                shape="circle"
+                icon={<QrcodeOutlined />}
+                size="large"
+                onClick={() => navigate("/scan")}
+            />,
+            <OptInNotificationsButton key="notifications" />,
+        ]}
     />
 }
 

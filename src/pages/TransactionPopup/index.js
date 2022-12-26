@@ -4,7 +4,7 @@
  * @date 24/10/22
  */
 import React, {useEffect, useState} from 'react'
-import {Avatar, Button, Descriptions, Spin, Space, Row, Col} from "antd";
+import { Avatar, Button, Descriptions, Spin, Space, Row, Col } from "antd";
 import Web3 from "../../helpers/Web3";
 import _ from "lodash";
 import {toTitleCase} from "../../helpers";
