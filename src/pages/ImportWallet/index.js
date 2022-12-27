@@ -4,7 +4,7 @@ import _ from "lodash";
 import Web3, { PASSWORD } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
-import SetupWalletLayout from "../../components/SetupWalletLayout";
+import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 const { Title, Paragraph } = Typography;
 
 const ImportWalletPage = ({ userDetails }) => {

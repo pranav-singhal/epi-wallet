@@ -6,7 +6,7 @@ import Web3, { PASSWORD } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import useUserDetails from "../../hooks/useUserDetails";
-import SetupWalletLayout from "../../components/SetupWalletLayout";
+import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 
 const { Title, Paragraph } = Typography;
 

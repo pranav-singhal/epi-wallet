@@ -4,7 +4,7 @@ import classnames from "classnames";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { ImportOutlined, PlusSquareOutlined } from "@ant-design/icons";
-import SetupWalletLayout from "../../components/SetupWalletLayout";
+import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 
 const { Title } = Typography;
 const IMPORT_OPTION = "import";

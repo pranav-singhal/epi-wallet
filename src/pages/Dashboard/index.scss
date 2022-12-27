@@ -24,6 +24,11 @@
       cursor: pointer;
     }
   }
+
+  .ant-ribbon-placement-end {
+    right: 0px!important;
+    top: 1px;
+  }
 }
 
 .chat-list-loading {

@@ -1,20 +1,26 @@
 .chat-page {
-  height: 100%;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 4px;
-
   &-input {
     display: flex;
     flex-direction: row;
     gap: 4px;
-    padding: 5px;
+    padding: 15px;
   }
 
   &-messages {
     overflow: auto;
     border-radius: 10px;
-    flex-grow: 1;
     padding: 15px;
+
+    // By applying the following styles, we will make sure that messages
+    // take all the remaining height after removing header and input box
+    height: 1px;
+    flex-grow: 1;
+  }
+
+  &-error-state {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

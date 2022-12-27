@@ -7,8 +7,8 @@ import { message } from "antd";
 import { getNotifications, toTitleCase } from "./helpers";
 import Web3 from "./helpers/Web3";
 import _ from "lodash";
-import AppHeader from "./components/AppHeader";
 import useUserDetails from "./hooks/useUserDetails";
+import MainLayout from "./components/Layouts/MainLayout";
 
 export const PAGES = {
   DASHBOARD: "dashboard",
@@ -116,16 +116,9 @@ function App() {
   }, [userDetails]);
 
   return (
-    <div className="app">
-        <AppHeader
-            title={PROJECT_NAME}
-            subTitle={PAGES.DASHBOARD}
-        />
-
-      <div className="site-page-content">
-          <Dashboard />
-      </div>
-    </div>
+    <MainLayout>
+      <Dashboard />
+    </MainLayout>
   );
 }
 
