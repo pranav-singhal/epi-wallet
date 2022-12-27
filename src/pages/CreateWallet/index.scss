@@ -1,4 +1,4 @@
-.import-wallet {
+.create-wallet {
   &-head {
     display: flex;
     margin-top: 12px;
@@ -17,7 +17,6 @@
   }
 
   &-form {
-    flex-grow: 1;
     display: flex;
     justify-content: center;
 

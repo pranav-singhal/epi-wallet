@@ -7,14 +7,12 @@ import {
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import CreateWallet from "./components/CreateWallet";
-import Dashboard from "./pages/Dashboard";
+import CreateWallet from "./pages/CreateWallet";
 import ImportWalletPage from "./pages/ImportWallet";
-import SetupWallet from "./components/SetupWallet";
+import SetupWallet from "./pages/SetupWallet";
 import NewRequestPage from "./components/NewRequestPage";
 import QRCodeScanner from "./pages/QRCodeScanner";
 import ChatPage from "./pages/ChatPage";
-import {Transaction} from "ethers";
 import TransactionPopup from "./pages/TransactionPopup";
 import NewSendMoneyPage from './components/NewSendMoneyPage';
 
@@ -35,10 +33,6 @@ const router = createBrowserRouter(
         {
             path: "/wallet/import",
             element: <ImportWalletPage />
-        },
-        {
-            path: "/dashboard",
-            element: <Dashboard />
         },
         {
             path: "/request/new",
