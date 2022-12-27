@@ -73,9 +73,10 @@ const ChatList = (props) => {
           <Row>
             {_.map(threadUsers, (threadUserName) => {
               const threadUser = _.get(userDetails, [threadUserName]);
+              console.log("thread user:", threadUser);
               return (
                   <Col span={24} key={threadUser.address}>
-                    <AttachBadge showBadge={threadUser.user_type === 'vendor'}>
+                    <AttachBadge showBadge={threadUser.user_type && (threadUser.user_type === 'vendor')}>
                       <div
                           className="chat-list-row"
                           onClick={() => {
@@ -115,6 +116,10 @@ const Dashboard = (props) => {
 
   const goToNewRequestPage = () => {
     navigate('/request/new')
+  }
+
+  const goToNewSendMoneyPage = () => {
+    navigate('/send/new')
   }
 
   const updateAccountBalanceInEth = () => {
@@ -195,7 +200,7 @@ const Dashboard = (props) => {
               Request
             </div>
           </div>
-          <div>
+          <div onClick={goToNewSendMoneyPage}>
             <Button type="primary" icon={<ArrowRightOutlined />} shape='circle' />
             <div>
               Send

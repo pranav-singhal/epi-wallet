@@ -6,6 +6,7 @@ import AppHeader from "../AppHeader";
 import {useNavigate} from "react-router-dom";
 import useUserDetails from "../../hooks/useUserDetails";
 import {sendMessageForRequest} from "../../api";
+import AutoCompleteSearchForUsers from '../AutoCompleteSearchForUsers';
 
 const NewRequestPage = () => {
     const navigate = useNavigate()
@@ -32,11 +33,8 @@ const NewRequestPage = () => {
             newMessageAmount: parseFloat(amount),
             threadUserName: selectedUser
         })
-            .then(console.log)
+            .then(() => navigate(`/chat?to=${selectedUser}`))
     }
-
-
-    console.log("selectedUser", selectedUser)
 
     if (userDetails) {
         return (
@@ -47,13 +45,8 @@ const NewRequestPage = () => {
                         <Col offset={1}>
                             <Row>
                                 <Col span={24}>
-                                    <AutoComplete
-                                        placeholder={"Search for users"}
-                                        filterOption
-                                        onSelect={setSelectedUser}
-                                        // onSearch={handleSearch}
-                                        style={{ width: 200 }}
-                                        options={userOptions}
+                                    <AutoCompleteSearchForUsers 
+                                    onSelect={setSelectedUser}
                                     />
 
 

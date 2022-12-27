@@ -16,6 +16,7 @@ import QRCodeScanner from "./pages/QRCodeScanner";
 import ChatPage from "./pages/ChatPage";
 import {Transaction} from "ethers";
 import TransactionPopup from "./pages/TransactionPopup";
+import NewSendMoneyPage from './components/NewSendMoneyPage';
 
 const router = createBrowserRouter(
     [
@@ -42,6 +43,10 @@ const router = createBrowserRouter(
         {
             path: "/request/new",
             element: <NewRequestPage />
+        },
+        {
+            path: "/send/new",
+            element: <NewSendMoneyPage />
         },
         {
             path: "/scan",
