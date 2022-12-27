@@ -6,10 +6,10 @@ import Web3 from "../../helpers/Web3";
 import {BellFilled, BellOutlined, QrcodeOutlined} from "@ant-design/icons";
 
 export const NOTIFICATION_CHANNEL = '0xBA36124E8af635d9d32C4cC49802cacade133a5F';
-const signer = Web3.getEthersWallet();
-const public_key = signer?.address;
 
 const OptInNotificationsButton = () => {
+    const signer = Web3.getEthersWallet();
+    const public_key = signer?.address;
     const [isLoading, isSubscribed, setIsSubscribed] = useIsSubscribed(public_key);
 
     const handleOptIn = () => {
