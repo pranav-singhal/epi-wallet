@@ -11,6 +11,8 @@ import {toTitleCase} from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
 import useQuery from "../../hooks/useQuery";
 import {useNavigate} from "react-router-dom";
+import MainLayout from "../../components/Layouts/MainLayout";
+import FullPageLoader from "../../components/FullPageLoader";
 
 const Account = (props) => {
   const {name, address, avatar} = props;
@@ -69,75 +71,76 @@ const TransactionPopup = (props) => {
   const from = _.get(userDetails, [currentUser]);
 
   if (isLoading) {
-    return (
-      <div className='fullpage-loader'>
-        <Space size="middle">
-          <Spin size='large'/>
-        </Space>
-      </div>
-    )
+    return <FullPageLoader removeMessage />;
   }
 
   return (
-    <div className='transaction-popup'>
-      <Descriptions
-        bordered
-        column={1}
-        contentStyle={{
-          height: '80px'
-        }}
-        labelStyle={{
-          height: '80px',
-          fontSize: '20px'
-        }}
-      >
-        <Descriptions.Item label="From">
-          <Account {...from} />
-        </Descriptions.Item>
-        <Descriptions.Item label="To">
-          <Account {...to} />
-        </Descriptions.Item>
-        <Descriptions.Item label='Gas'>
-          <div className='eth-amounts'>
-            <span>{totalGasAmount.toPrecision(PRECISION)}</span>
-            <span>ETH</span>
-          </div>
-        </Descriptions.Item>
-        <Descriptions.Item label='Value' contentStyle={{fontSize: '20px'}}>
-          <div className='eth-amounts'>
-            <span>{amount.toPrecision(PRECISION)}</span>
-            <span>ETH</span>
-          </div>
-        </Descriptions.Item>
-        <Descriptions.Item label='Total' contentStyle={{fontSize: '20px'}}>
-          <div className='eth-amounts'>
-            <span>{(amount + totalGasAmount).toPrecision(PRECISION)}</span>
-            <span>ETH</span>
-          </div>
-        </Descriptions.Item>
-      </Descriptions>
-      <div className='buttons'>
-        <Button
-          type="primary"
-          size='large'
-          shape='round'
-          loading={isTransactionProcessing}
-          onClick={() => Web3.sendTransaction(to, amount, gas, transactionId, qrId)
+    <MainLayout
+      removeExtraIcons
+      showAppName={false}
+      onBackClick={() => navigate(-1)}
+      headerTitle="Confirm Transaction"
+    >
+      <div className='transaction-popup'>
+        <Descriptions
+          bordered
+          column={1}
+          contentStyle={{
+            height: '80px'
+          }}
+          labelStyle={{
+            height: '80px',
+            fontSize: '20px'
+          }}
+        >
+          <Descriptions.Item label="From">
+            <Account {...from} />
+          </Descriptions.Item>
+          <Descriptions.Item label="To">
+            <Account {...to} />
+          </Descriptions.Item>
+          <Descriptions.Item label='Gas'>
+            <div className='eth-amounts'>
+              <span>{totalGasAmount.toPrecision(PRECISION)}</span>
+              <span>ETH</span>
+            </div>
+          </Descriptions.Item>
+          <Descriptions.Item label='Value' contentStyle={{fontSize: '20px'}}>
+            <div className='eth-amounts'>
+              <span>{amount.toPrecision(PRECISION)}</span>
+              <span>ETH</span>
+            </div>
+          </Descriptions.Item>
+          <Descriptions.Item label='Total' contentStyle={{fontSize: '20px'}}>
+            <div className='eth-amounts'>
+              <span>{(amount + totalGasAmount).toPrecision(PRECISION)}</span>
+              <span>ETH</span>
+            </div>
+          </Descriptions.Item>
+        </Descriptions>
+        <div className='buttons'>
+          <Button
+            type="primary"
+            size='large'
+            shape='round'
+            loading={isTransactionProcessing}
+            onClick={() => Web3.sendTransaction(to, amount, gas, transactionId, qrId)
               .then(() => navigate(`/chat?to=${to?.username}`))
-        }
-        >
-          Confirm
-        </Button>
-        <Button
-          type="default"
-          size='large'
-          shape='round'
-          onClick={() => navigate(`/chat?to=${to?.username}`)}
-        >
-          Reject
-        </Button>
+            }
+          >
+            Confirm
+          </Button>
+          <Button
+            type="default"
+            size='large'
+            shape='round'
+            onClick={() => navigate(`/chat?to=${to?.username}`)}
+          >
+            Reject
+          </Button>
+        </div>
       </div>
-    </div>
+    </MainLayout>
   )
 }
 

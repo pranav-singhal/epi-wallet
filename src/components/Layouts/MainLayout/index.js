@@ -24,7 +24,7 @@ const MainLayout = (props) => {
           title={props.showAppName ? PROJECT_NAME : props.headerTitle}
           subTitle={props.hideLogo && PROJECT_NAME}
           onBack={props.onBackClick}
-          extra={[
+          extra={!props.removeExtraIcons && [
             <Button
               key="button"
               type="dashed"
@@ -49,11 +49,13 @@ MainLayout.propTypes = {
   className: PropTypes.string,
   onBackClick: PropTypes.func,
   children: PropTypes.node,
+  removeExtraIcons: PropTypes.bool
 };
 
 MainLayout.defaultProps = {
   showAppName: true,
-  hideLogo: false
+  hideLogo: false,
+  removeExtraIcons: false
 };
 
 export default MainLayout;

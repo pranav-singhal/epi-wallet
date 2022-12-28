@@ -3,7 +3,7 @@
  * @profile https://github.com/arvindkalra
  * @date 17/04/22
  */
-import {Button, Empty, InputNumber, Space, Spin} from "antd";
+import { Button, Empty, InputNumber } from "antd";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { fetchMessages, sendMessageForRequest } from "../../api";
@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
 import MainLayout from "../../components/Layouts/MainLayout";
 import useUserDetails from "../../hooks/useUserDetails";
-import {toTitleCase} from "../../helpers";
+import { toTitleCase } from "../../helpers";
+import FullPageLoader from "../../components/FullPageLoader";
 
 const ChatPage = () => {
   const [newMessageAmount, setNewMessageAmount] = useState(0);
@@ -66,36 +67,33 @@ const ChatPage = () => {
       return;
     }
 
-    if (messagesElement) {
-      const { current: ele } = messagesElement;
-      ele.scroll({ top: ele.scrollHeight, behavior: "smooth" });
-
-      messagesElement.current.addEventListener("DOMNodeInserted", (event) => {
-        const { currentTarget: target } = event;
-        target.scroll({ top: target.scrollHeight, behavior: "smooth" });
-      });
+    if (!messagesElement) {
+      return;
     }
+
+    const { current: ele } = messagesElement;
+
+    if (!ele) {
+      return;
+    }
+
+    ele.scroll({ top: ele.scrollHeight, behavior: "smooth" });
+
+    ele.addEventListener("DOMNodeInserted", (event) => {
+      const { currentTarget: target } = event;
+      target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+    });
   }, [isLoading]);
 
   if (isLoading) {
-    return (
-      <div className="fullpage-loader">
-        <Space size="middle">
-          <Spin size="large" />
-        </Space>
-      </div>
-    );
+    return <FullPageLoader message="Fetching transactions..." />;
   }
 
   if (shouldShowErrorState) {
     return (
-      <MainLayout
-        onBackClick={() => navigate('/')}
-      >
+      <MainLayout onBackClick={() => navigate("/")}>
         <div className="chat-page-error-state">
-          <Empty
-            description="User does not exist in the EPI Database"
-          />
+          <Empty description="User does not exist in the EPI Database" />
         </div>
       </MainLayout>
     );
@@ -106,7 +104,7 @@ const ChatPage = () => {
       hideLogo
       className="chat-page"
       showAppName={false}
-      onBackClick={() => navigate('/')}
+      onBackClick={() => navigate("/")}
       headerTitle={toTitleCase(threadUser.name)}
     >
       <div className="chat-page-messages" ref={messagesElement}>

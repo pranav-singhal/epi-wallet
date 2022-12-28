@@ -1,6 +1,8 @@
 @import "components/CryptoTransferMessage";
 @import "components/Layouts/SetupWalletLayout";
 @import "components/Layouts/MainLayout";
+@import "components/FullPageLoader";
+
 @import "pages/CreateWallet";
 @import "pages/SetupWallet";
 @import "pages/Dashboard";
@@ -33,12 +35,6 @@
   display: flex;
   justify-content: space-around;
   height: 100vh;
-}
-
-.fullpage-loader {
-  display: flex;
-  justify-content: space-around;
-  height: 100%;
 }
 
 img {
