@@ -1,0 +1,29 @@
+.approve-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-evenly;
+
+  &-decline {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #f5222d;
+
+    cursor: pointer;
+
+    span {
+      color: #ffffff;
+    }
+
+    &.is-disabled {
+      background-color: #ffa39e;
+      cursor: not-allowed;
+    }
+  }
+}

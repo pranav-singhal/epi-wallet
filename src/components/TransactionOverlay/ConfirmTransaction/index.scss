@@ -1,0 +1,42 @@
+.confirm-transaction {
+  display: flex;
+  flex-direction: column;
+
+  &-accounts {
+    margin-top: 12px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+
+    .account {
+      flex-grow: 1;
+      border: 1px solid #ebedf0;
+      padding: 8px;
+
+      border-radius: 8px;
+
+      display: flex;
+      justify-content: center;
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+    }
+  }
+
+  &-amounts {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+
+    flex-grow: 1;
+  }
+
+  &-cta {
+    flex-grow: 1;
+    align-items: end;
+  }
+}

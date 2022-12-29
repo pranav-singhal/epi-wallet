@@ -14,6 +14,8 @@ import MainLayout from "../../components/Layouts/MainLayout";
 import useUserDetails from "../../hooks/useUserDetails";
 import { toTitleCase } from "../../helpers";
 import FullPageLoader from "../../components/FullPageLoader";
+import TransactionConfirmationOverlay from "../../components/TransactionOverlay";
+import useTransaction from "../../hooks/useTransaction";
 
 const ChatPage = () => {
   const [newMessageAmount, setNewMessageAmount] = useState(0);
@@ -28,6 +30,12 @@ const ChatPage = () => {
   const threadUser = _.get(userDetails, to, {});
 
   const [shouldShowErrorState, setShouldShowErrorState] = useState(false);
+  const [
+    shouldShowTransactionPopover,
+    transactionDetails,
+    initiateTransaction,
+    endTransaction,
+  ] = useTransaction();
 
   useEffect(() => {
     if (!usersLoaded) {
@@ -46,8 +54,12 @@ const ChatPage = () => {
     });
   }, [usersLoaded]);
 
-  const handleSend = () =>
-    navigate(`/transaction?to=${to}&amount=${newMessageAmount}`);
+  const handleSend = () => {
+    initiateTransaction({
+      to,
+      value: newMessageAmount,
+    });
+  };
 
   const handleRequest = () => {
     sendMessageForRequest({
@@ -112,13 +124,13 @@ const ChatPage = () => {
           <CryptoTransferMessage
             key={message.id}
             message={message}
-            handleApprove={() =>
-              navigate(
-                `/transaction?to=${to}&amount=${parseFloat(
-                  message.amount
-                )}&transactionId=${message.transactionId}`
-              )
-            }
+            handleApprove={() => {
+              initiateTransaction({
+                to,
+                value: parseFloat(message.amount),
+                transactionId: message.transactionId,
+              });
+            }}
           />
         ))}
       </div>
@@ -147,6 +159,14 @@ const ChatPage = () => {
           Send
         </Button>
       </div>
+      {shouldShowTransactionPopover && (
+        <TransactionConfirmationOverlay
+          {...transactionDetails}
+          onApprove={endTransaction}
+          onDecline={endTransaction}
+          onCancel={endTransaction}
+        />
+      )}
     </MainLayout>
   );
 };

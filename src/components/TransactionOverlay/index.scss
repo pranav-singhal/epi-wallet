@@ -1,0 +1,69 @@
+.transaction {
+  @import "ConfirmTransaction";
+  @import "ApproveSlider";
+
+  &-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+  }
+
+  &-popup {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    outline: 0;
+
+    &-dialog {
+      width: 100%;
+      position: absolute;
+      bottom: 0px;
+      height: 40%;
+      background-color: white;
+
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      padding: 18px;
+    }
+  }
+
+  &-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+
+    div:first-child {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+
+  &-content {
+    position: relative;
+
+    height: 80%;
+
+    & > div {
+      height: 100%;
+    }
+  }
+
+  &-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
