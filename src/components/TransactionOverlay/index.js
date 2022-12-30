@@ -12,7 +12,7 @@ import Web3 from "../../helpers/Web3";
 import useUserDetails from "../../hooks/useUserDetails";
 import _ from "lodash";
 
-const TransactionOverlayContainer = (props) => {
+export const TransactionOverlayContainer = (props) => {
   return (
     <div className="transaction">
       <div className="transaction-overlay" />
@@ -27,7 +27,7 @@ const TransactionOverlay = (props) => {
   const gas = 30000;
   const [gasPrice, setGasPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [userDetails, loaded] = useUserDetails();
+  const [userDetails, userDetailsloaded] = useUserDetails();
 
   const { to, value, qrId, transactionId } = props;
 
@@ -52,7 +52,7 @@ const TransactionOverlay = (props) => {
     });
   };
 
-  if (isLoading || !loaded) {
+  if (isLoading || !userDetailsloaded) {
     return (
       <TransactionOverlayContainer>
         <div className="transaction-spinner">

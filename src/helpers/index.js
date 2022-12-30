@@ -1,5 +1,6 @@
 import * as PushAPI from "@pushprotocol/restapi";
 const notificationIdentifier = 'wallet-notif'
+const VAPID_PUBLIC_KEY = 'BLqgt5ScjMAkgorznQWbd0pfbgb7i-Ej0vBC1m8CqXa1y6jczLoK_jwKjGbfa7o8i_6hykUStj7_Ha7ysjcSKx8';
 
 export const getNotifications = (public_key) => {
     return PushAPI.user.getFeeds({
@@ -45,4 +46,41 @@ export const toTitleCase = (string) => {
   }
 
   return string.replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase());
+}
+
+function urlB64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+export const registerServiceWorker = () => {
+  return navigator.serviceWorker
+      .register('./service-worker.js')
+      .then(registration => {
+
+        // return registration
+          const subscriptionOptions = {
+            userVisibleOnly: true,
+              applicationServerKey: VAPID_PUBLIC_KEY
+          }
+
+          return registration.pushManager.subscribe(subscriptionOptions)
+      })
+      .then((pushSubscription) => {
+          console.log("Subscribed to notifications: ", JSON.stringify(pushSubscription))
+          return pushSubscription;
+      })
+      .catch(err => {
+        console.error("unable to register service worker: ", err)
+      })
 }

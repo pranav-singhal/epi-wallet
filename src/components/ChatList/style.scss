@@ -1,0 +1,10 @@
+.chat-list-row {
+    &__content {
+        max-width: 75%;
+        &-address{
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    
+}

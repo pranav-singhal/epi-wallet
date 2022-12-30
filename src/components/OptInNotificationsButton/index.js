@@ -13,6 +13,7 @@ const OptInNotificationsButton = () => {
     const [isLoading, isSubscribed, setIsSubscribed] = useIsSubscribed(public_key);
 
     const handleOptIn = () => {
+
       PushAPI.channels.subscribe({
         signer,
         channelAddress: `eip155:5:${NOTIFICATION_CHANNEL}`, // channel address in CAIP
