@@ -26,7 +26,10 @@ const EnableNotificationsPopup = () => {
         getUserSubscription(currentUserUsername)
         .then((_subscriptionObjectStored) => {
             subscriptionObjectStored = _subscriptionObjectStored;
-            return navigator.serviceWorker.ready;
+            return navigator.serviceWorker.register('/service-worker.js');
+        })
+        .then(registration => {
+            return navigator.serviceWorker.ready
         })
         .then(swRegistration => {
             return swRegistration.pushManager.getSubscription()
