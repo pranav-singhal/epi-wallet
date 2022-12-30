@@ -80,7 +80,7 @@ export const subscribeToWebNotifications = () => {
           console.log("Subscribed to notifications: ", JSON.stringify(pushSubscription))
           return pushSubscription;
       })
-      // .catch(err => {
-      //   console.error("unable to register service worker: ", err)
-      // })
+      .catch(err => {
+        console.error("unable to register service worker: ", err)
+      })
 }

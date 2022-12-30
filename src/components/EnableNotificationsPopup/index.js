@@ -14,6 +14,9 @@ const EnableNotificationsPopup = () => {
             console.log("server response of notification subscription: ", res);
             setShowPopup(false)
         })
+        .catch(err => {
+            console.log("somethihg went wrong: ", err)
+        })
     }
 
 
