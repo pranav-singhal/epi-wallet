@@ -1,8 +1,10 @@
 import Web3 from "../helpers/Web3";
 import * as PushAPI from "@pushprotocol/restapi";
 import {NOTIFICATION_CHANNEL} from "../components/OptInNotificationsButton";
+import { subscribeToWebNotifications } from "../helpers";
 
 export const BASE_URL = 'https://wallet-api.consolelabs.in';
+// export const BASE_URL = 'http://localhost:1337';
 
 export const getCurrentUser = () => {
   return localStorage.getItem('current_user');
@@ -34,21 +36,54 @@ export const createNewUser = ({username, address}) => {
   .then(res => res.json());
 }
 
-export const subscribeToNotifications = () => {
-  const signer = Web3.getEthersWallet();
-  const public_key = signer?.address;
-  return PushAPI.channels.subscribe({
-    signer,
-    channelAddress: `eip155:5:${NOTIFICATION_CHANNEL}`, // channel address in CAIP
-    userAddress: `eip155:5:${public_key}`, // user address in CAIP
-    onSuccess: () => {
-      console.log('opted in!');
-    },
-    onError: () => {
-      console.error('opt in error');
-    },
-    env: 'staging'
+export const createUserSubscription = ({username, subscription}) => {
+  return fetch(`${BASE_URL}/user/subscription`, {
+    method: 'POST',
+    body: JSON.stringify({
+      username,
+      subscription
+    })
   })
+  .then(res => res.json());
+}
+
+export const getUserSubscription = (username) => {
+  return fetch(`${BASE_URL}/user/${username}/subscription`)
+  .then(res => res.json());
+}
+
+export const subscribeToNotifications = () => {
+  const currentUsername = localStorage.getItem('current_user');
+  if (currentUsername) {
+    const signer = Web3.getEthersWallet();
+    const public_key = signer?.address;
+    return subscribeToWebNotifications()
+    .then(subscriptionObject => {
+      return createUserSubscription({
+        username: currentUsername,
+        subscription: JSON.stringify(subscriptionObject)
+      })
+    })
+    .then(subscriptionObject => {
+      return PushAPI.channels.subscribe({
+        signer,
+        channelAddress: `eip155:5:${NOTIFICATION_CHANNEL}`, // channel address in CAIP
+        userAddress: `eip155:5:${public_key}`, // user address in CAIP
+        onSuccess: () => {
+          console.log('opted in!');
+          return subscriptionObject;
+          // subscribeToWebNotifications()
+        },
+        onError: () => {
+          console.error('opt in error');
+        },
+        env: 'staging'
+      })
+    })
+  } else {
+    return Promise.reject();
+  }
+  
 }
 
 export const sendMessageForRequest = ({newMessageAmount, threadUserName}) => {

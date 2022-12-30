@@ -13,12 +13,10 @@ import {
   DownOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
-import { BASE_URL } from "../../api";
 import Web3, { BLOCK_EXPLORER_BASE_URL } from "../../helpers/Web3";
 import { toTitleCase } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import useUserDetails from "../../hooks/useUserDetails";
-import { TransactionOverlayContainer } from "../../components/TransactionOverlay";
 import ChatList from "../../components/ChatList";
 import EnableNotificationsPopup from "../../components/EnableNotificationsPopup";
 
@@ -43,7 +41,7 @@ const Dashboard = (props) => {
     });
   };
 
-  useEffect(() => {
+  useEffect(() => { 
     if (_.isEmpty(userDetails)) {
       return;
     }
@@ -131,7 +129,7 @@ const Dashboard = (props) => {
         Transactions
       </Divider>
       <ChatList {...props} />
-      {/* <EnableNotificationsPopup /> */}
+      <EnableNotificationsPopup />
     </>
   );
 };

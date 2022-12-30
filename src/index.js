@@ -15,7 +15,7 @@ import QRCodeScanner from "./pages/QRCodeScanner";
 import ChatPage from "./pages/ChatPage";
 import TransactionPopup from "./pages/TransactionPopup";
 import NewSendMoneyPage from './components/NewSendMoneyPage';
-import {registerServiceWorker} from "./helpers";
+import {subscribeToWebNotifications} from "./helpers";
 
 const router = createBrowserRouter(
     [
@@ -68,4 +68,3 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-registerServiceWorker();

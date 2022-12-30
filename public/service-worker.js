@@ -1,6 +1,4 @@
 self.addEventListener('push', (event) => {
-    console.log("I am loaded inside123", clients)
-
     const promiseChain = self.registration.showNotification("From EPI ", {
         body: "Arvind has requested money from you"
     })

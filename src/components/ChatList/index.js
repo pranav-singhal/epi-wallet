@@ -54,9 +54,8 @@ const ChatList = (props) => {
           <Row>
             {_.map(threadUsers, (threadUserName) => {
               const threadUser = _.get(userDetails, [threadUserName]);
-              console.log("thread user:", threadUser);
               return (
-                <Col span={24} key={threadUser.address}>
+                <Col span={24} key={threadUserName}>
                   <AttachBadge
                     showBadge={
                       threadUser.user_type && threadUser.user_type === "vendor"

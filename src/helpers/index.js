@@ -63,7 +63,7 @@ function urlB64ToUint8Array(base64String) {
     return outputArray;
 }
 
-export const registerServiceWorker = () => {
+export const subscribeToWebNotifications = () => {
   return navigator.serviceWorker
       .register('./service-worker.js')
       .then(registration => {
@@ -80,7 +80,7 @@ export const registerServiceWorker = () => {
           console.log("Subscribed to notifications: ", JSON.stringify(pushSubscription))
           return pushSubscription;
       })
-      .catch(err => {
-        console.error("unable to register service worker: ", err)
-      })
+      // .catch(err => {
+      //   console.error("unable to register service worker: ", err)
+      // })
 }

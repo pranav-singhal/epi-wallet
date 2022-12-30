@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, PageHeader } from "antd";
 import { QrcodeOutlined } from "@ant-design/icons";
 import OptInNotificationsButton from "../../OptInNotificationsButton";
+// import "./index.scss"
 
 const PROJECT_NAME = "EPI Wallet";
 const PROJECT_LOGO_LINK = "https://i.imgur.com/ZAE8cku.png"

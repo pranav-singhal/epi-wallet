@@ -29,7 +29,7 @@ const CreateWallet = () => {
 
         localStorage.setItem("current_user", values?.username);
 
-        return subscribeToNotifications();
+        // return subscribeToNotifications();
       })
       .then(() => navigate("/"))
       .catch(console.error);
