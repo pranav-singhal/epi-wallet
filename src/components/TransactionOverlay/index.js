@@ -11,23 +11,13 @@ import { useEffect, useState } from "react";
 import Web3 from "../../helpers/Web3";
 import useUserDetails from "../../hooks/useUserDetails";
 import _ from "lodash";
-
-export const TransactionOverlayContainer = (props) => {
-  return (
-    <div className="transaction">
-      <div className="transaction-overlay" />
-      <div className="transaction-popup">
-        <div className="transaction-popup-dialog">{props.children}</div>
-      </div>
-    </div>
-  );
-};
+import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
 
 const TransactionOverlay = (props) => {
   const gas = 30000;
   const [gasPrice, setGasPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [userDetails, userDetailsloaded] = useUserDetails();
+  const [userDetails, userDetailsLoaded] = useUserDetails();
 
   const { to, value, qrId, transactionId } = props;
 
@@ -52,18 +42,18 @@ const TransactionOverlay = (props) => {
     });
   };
 
-  if (isLoading || !userDetailsloaded) {
+  if (isLoading || !userDetailsLoaded) {
     return (
-      <TransactionOverlayContainer>
+      <BottomOverlayLayout className="transaction">
         <div className="transaction-spinner">
           <Spin tip="Generating Transaction..." />
         </div>
-      </TransactionOverlayContainer>
+      </BottomOverlayLayout>
     );
   }
 
   return (
-    <TransactionOverlayContainer>
+    <BottomOverlayLayout className="transaction">
       <div className="transaction-heading">
         <div>Confirm Transaction</div>
         <Button
@@ -84,7 +74,7 @@ const TransactionOverlay = (props) => {
           onApprove={onApprove}
         />
       </div>
-    </TransactionOverlayContainer>
+    </BottomOverlayLayout>
   );
 };
 
