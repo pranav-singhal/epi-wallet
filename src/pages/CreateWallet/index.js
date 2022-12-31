@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {Button, Divider, Form, Input, Typography} from "antd";
 import _ from "lodash";
-import { PASSWORD, Web3Helper } from "../../helpers/Web3";
+import { PASSWORD } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import useUserDetails from "../../hooks/useUserDetails";
@@ -12,8 +12,7 @@ import useChainContext from "../../hooks/useChainContext";
 const { Title, Paragraph } = Typography;
 
 const CreateWallet = () => {
-  const [rpcUrl] = useChainContext();
-  const Web3 = new Web3Helper(rpcUrl);
+  const [, Web3] = useChainContext();
   const navigate = useNavigate();
 
   const [userDetails] = useUserDetails();

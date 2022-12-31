@@ -16,22 +16,36 @@ import ChatPage from "./pages/ChatPage";
 import NewSendMoneyPage from './components/NewSendMoneyPage';
 import chainList from "./helpers/chains.json";
 import _ from 'lodash';
+import {INFURA_API_KEY, Web3Helper} from "./helpers/Web3";
 
+// [start]: initial state
 export const ChainContext = createContext(chainList[1]);
+let preferredRpcUrl = _.get(chainList[1], 'rpc[0]');
+preferredRpcUrl = _.replace(preferredRpcUrl, 'INFURA_API_KEY', INFURA_API_KEY)
+const web3 = new Web3Helper(preferredRpcUrl)
+// [end]: initial state
+
 const Store= ({children}) => {
     const [state, dispatch] = useReducer((state, action) => {
-        console.log("action called:", action)
         if (action.type === 'switch_chain') {
 
             const newChain = _.filter(chainList, (chainItem) => {return chainItem.name === action.chain})
-            console.log("new chain:", newChain)
+
             if (!_.isEmpty(newChain)) {
-                return {...newChain[0]}
+
+                // when chain is switched, create a new web3 object with the rpc of the new chain
+                // pass that object to the state
+                // this way, the web3 object is only initialised when state is updated
+                let preferredRpcUrl = _.get(newChain[0], 'rpc[0]');
+                preferredRpcUrl = _.replace(preferredRpcUrl, 'INFURA_API_KEY', INFURA_API_KEY)
+                const web3 = new Web3Helper(preferredRpcUrl)
+
+                return {...newChain[0], web3}
             }
         }
         return chainList[1];
 
-    }, chainList[1]);
+    }, {...chainList[1], web3});
 
     return (
         <ChainContext.Provider value={[state, dispatch]}>

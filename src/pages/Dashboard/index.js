@@ -11,7 +11,7 @@ import {
   ArrowRightOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
-import { BLOCK_EXPLORER_BASE_URL, Web3Helper } from "../../helpers/Web3";
+import { BLOCK_EXPLORER_BASE_URL } from "../../helpers/Web3";
 import { toTitleCase } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import useUserDetails from "../../hooks/useUserDetails";
@@ -24,9 +24,7 @@ import useChainContext from "../../hooks/useChainContext";
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
-  const [rpcUrl] = useChainContext();
-  const web3 = new Web3Helper(rpcUrl);
-  console.log("rpcUrl: ", rpcUrl)
+  const [rpcUrl, web3] = useChainContext();
 
   const [userDetails] = useUserDetails(null);
   const navigate = useNavigate();
@@ -45,7 +43,7 @@ const Dashboard = (props) => {
     });
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     if (_.isEmpty(userDetails)) {
       return;
     }

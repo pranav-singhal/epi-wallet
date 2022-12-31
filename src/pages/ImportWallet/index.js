@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {Button, Divider, Form, Input, Typography} from "antd";
 import _ from "lodash";
-import { PASSWORD, Web3Helper } from "../../helpers/Web3";
+import { PASSWORD } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
@@ -10,9 +10,8 @@ const { Title, Paragraph } = Typography;
 
 const ImportWalletPage = ({ userDetails }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rpcUrl] = useChainContext();
-  const web3 = new Web3Helper(rpcUrl);
-  
+  const [, web3] = useChainContext();
+
   const setWallet = (values) => {
     setIsSubmitting(true);
     const walletObject = web3.getWalletObjectFromPrivateKey(values.pvtKey); // form validation ensures this is valid

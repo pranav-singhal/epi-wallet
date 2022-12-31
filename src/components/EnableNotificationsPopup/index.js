@@ -4,19 +4,15 @@ import { Button, Col, Row } from "antd";
 import { getUserSubscription, subscribeToNotifications } from "../../api";
 import "./style.scss";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
-import _ from "lodash";
 import useChainContext from "../../hooks/useChainContext";
-import { Web3Helper } from "../../helpers/Web3";
 
 const EnableNotificationsPopup = () => {
     const [showPopup, setShowPopup] = useState(false);
-    const [rpcUrl] = useChainContext();
-    const web3 = new Web3Helper(rpcUrl)
-    const signer = web3.getEthersWallet();
+    const [, web3] = useChainContext();
+    const signer = web3?.getEthersWallet();
     const handleEnableNotificationsClick = () => {
         subscribeToNotifications(signer)
-        .then(res => {
-            console.log("server response of notification subscription: ", res);
+        .then(() => {
             setShowPopup(false)
         })
         .catch(err => {

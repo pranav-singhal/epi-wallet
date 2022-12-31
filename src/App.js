@@ -5,7 +5,6 @@ import "antd/dist/antd.css";
 import Dashboard from "./pages/Dashboard";
 import { message } from "antd";
 import { getNotifications, toTitleCase } from "./helpers";
-import { Web3Helper } from "./helpers/Web3";
 import _ from "lodash";
 import useUserDetails from "./hooks/useUserDetails";
 import MainLayout from "./components/Layouts/MainLayout";
@@ -23,9 +22,8 @@ export const PAGES = {
 
 function App() {
   const [userDetails] = useUserDetails();
-  const [rpcUrl] = useChainContext()
-  const web3 = new Web3Helper(rpcUrl);
-  const isWalletLoaded = web3.isAccountLoaded();
+  const [, web3] = useChainContext()
+  const isWalletLoaded = web3?.isAccountLoaded();
   const [
     shouldShowTransactionPopover,
     transactionDetails,
@@ -35,7 +33,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!web3.isAccountLoaded()) {
+    if (!web3?.isAccountLoaded()) {
       return navigate("/wallet/new")
     }
   }, []);
