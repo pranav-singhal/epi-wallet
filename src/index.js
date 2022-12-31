@@ -13,7 +13,6 @@ import SetupWallet from "./pages/SetupWallet";
 import NewRequestPage from "./components/NewRequestPage";
 import QRCodeScanner from "./pages/QRCodeScanner";
 import ChatPage from "./pages/ChatPage";
-import TransactionPopup from "./pages/TransactionPopup";
 import NewSendMoneyPage from './components/NewSendMoneyPage';
 import chainList from "./helpers/chains.json";
 import _ from 'lodash';
@@ -78,9 +77,6 @@ const router = createBrowserRouter([
     element: <ChatPage />,
   },
 ]);
-
-    ]
-);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

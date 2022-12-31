@@ -4,7 +4,7 @@
  * @date 30/12/22
  */
 import ConfirmTransaction from "./ConfirmTransaction";
-import { Button, Space, Spin } from "antd";
+import { Button, Spin } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ export const TransactionOverlayContainer = (props) => {
 const TransactionOverlay = (props) => {
   const [rpcUrl] = useChainContext();
   const Web3 = new Web3Helper(rpcUrl);
-  const gas = 30000;
+  const gas = 53000;
   const [gasPrice, setGasPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [userDetails, userDetailsLoaded] = useUserDetails();

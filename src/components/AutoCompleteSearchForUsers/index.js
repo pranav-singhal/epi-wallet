@@ -6,7 +6,7 @@ import useUserDetails from '../../hooks/useUserDetails';
 const AutoCompleteSearchForUsers = ({onSelect =  () => {}}) => {
     const [userDetails] = useUserDetails();
     const nonVendorUserDetails = _.filter(userDetails, (_user) => {
-        return _user.user_type === 'user'
+        return _user.user_type !== 'vendor'
     });
     const userOptions = _.map(_.values(nonVendorUserDetails), (_user) => {
         return (
