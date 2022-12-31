@@ -1,26 +1,29 @@
 import React, { useState } from "react";
 import {Button, Divider, Form, Input, Typography} from "antd";
 import _ from "lodash";
-import Web3, { PASSWORD } from "../../helpers/Web3";
+import { PASSWORD, Web3Helper } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
+import useChainContext from "../../hooks/useChainContext";
 const { Title, Paragraph } = Typography;
 
 const ImportWalletPage = ({ userDetails }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rpcUrl] = useChainContext();
+  const web3 = new Web3Helper(rpcUrl);
+  
   const setWallet = (values) => {
     setIsSubmitting(true);
-    const walletObject = Web3.getWalletObjectFromPrivateKey(values.pvtKey); // form validation ensures this is valid
+    const walletObject = web3.getWalletObjectFromPrivateKey(values.pvtKey); // form validation ensures this is valid
 
     createNewUser({
       username: values.username,
       address: walletObject.address,
     })
       .then((_res) => {
-        Web3.addNewWallet(values.pvtKey, PASSWORD);
+        web3.addNewWallet(values.pvtKey, PASSWORD);
         localStorage.setItem("current_user", values.username);
-        return subscribeToNotifications();
       })
       .then((notifResult) => {
         window.location.reload();
@@ -83,7 +86,7 @@ const ImportWalletPage = ({ userDetails }) => {
               {
                 message: "Private key is invalid.",
                 validator: (_, value) => {
-                  return Web3.getWalletObjectFromPrivateKey(value)
+                  return web3.getWalletObjectFromPrivateKey(value)
                     ? Promise.resolve()
                     : Promise.reject();
                 },

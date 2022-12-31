@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {Button, Divider, Form, Input, Typography} from "antd";
 import _ from "lodash";
-import Web3, { PASSWORD } from "../../helpers/Web3";
+import { PASSWORD, Web3Helper } from "../../helpers/Web3";
 import { createNewUser, subscribeToNotifications } from "../../api";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import useUserDetails from "../../hooks/useUserDetails";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
+import useChainContext from "../../hooks/useChainContext";
 
 const { Title, Paragraph } = Typography;
 
 const CreateWallet = () => {
+  const [rpcUrl] = useChainContext();
+  const Web3 = new Web3Helper(rpcUrl);
   const navigate = useNavigate();
 
   const [userDetails] = useUserDetails();
@@ -28,8 +31,6 @@ const CreateWallet = () => {
         Web3.addNewWallet(walletObject?.privateKey, PASSWORD);
 
         localStorage.setItem("current_user", values?.username);
-
-        // return subscribeToNotifications();
       })
       .then(() => navigate("/"))
       .catch(console.error);

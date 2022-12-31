@@ -5,7 +5,7 @@
  */
 import React, {useEffect, useState} from 'react'
 import { Avatar, Button, Descriptions, Spin, Space, Row, Col } from "antd";
-import Web3 from "../../helpers/Web3";
+import { Web3Helper } from "../../helpers/Web3";
 import _ from "lodash";
 import {toTitleCase} from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
@@ -13,10 +13,10 @@ import useQuery from "../../hooks/useQuery";
 import {useNavigate} from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout";
 import FullPageLoader from "../../components/FullPageLoader";
+import useChainContext from '../../hooks/useChainContext';
 
 const Account = (props) => {
   const {name, address, avatar} = props;
-
   return (
     <Row
       className="user-account"
@@ -41,6 +41,8 @@ const Account = (props) => {
 const PRECISION = 5;
 
 const TransactionPopup = (props) => {
+  const [rpcUrl] = useChainContext();
+  const Web3 = new Web3Helper(rpcUrl);
   const gas = 30000;
   const [isLoading, setIsLoading] = useState(true);
   const [gasPrice, setGasPrice] = useState(0);

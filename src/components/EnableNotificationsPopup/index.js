@@ -5,11 +5,16 @@ import { getUserSubscription, subscribeToNotifications } from "../../api";
 import { TransactionOverlayContainer } from "../TransactionOverlay";
 import "./style.scss";
 import _ from "lodash";
+import useChainContext from "../../hooks/useChainContext";
+import { Web3Helper } from "../../helpers/Web3";
 
 const EnableNotificationsPopup = () => {
     const [showPopup, setShowPopup] = useState(false);
+    const [rpcUrl] = useChainContext();
+    const web3 = new Web3Helper(rpcUrl)
+    const signer = web3.getEthersWallet();
     const handleEnableNotificationsClick = () => {
-        subscribeToNotifications()
+        subscribeToNotifications(signer)
         .then(res => {
             console.log("server response of notification subscription: ", res);
             setShowPopup(false)
