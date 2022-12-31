@@ -3,34 +3,81 @@
  * @profile https://github.com/arvindkalra
  * @date 23/10/22
  */
-import React, {useEffect} from 'react';
-import { Html5Qrcode } from "html5-qrcode"
+import React, { useEffect } from "react";
+import { Html5Qrcode } from "html5-qrcode";
+import useTransaction from "../../hooks/useTransaction";
+import { useNavigate } from "react-router-dom";
+import TransactionConfirmationOverlay from "../../components/TransactionOverlay";
+import FullPageLoader from "../../components/FullPageLoader";
 
 const QRCodeScanner = (props) => {
+  const [
+    shouldShowTransactionPopover,
+    transactionDetails,
+    initiateTransaction,
+    endTransaction,
+  ] = useTransaction();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     try {
       const html5QrCode = new Html5Qrcode("reader");
 
-      const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-        props.onScanned(decodedText);
+      const qrCodeSuccessCallback = (decodedText) => {
+        const qrBody = JSON.parse(decodedText),
+          transactionDetail = {
+            to: qrBody.vendorName,
+            value: qrBody.amount,
+            qrId: qrBody.QRId,
+          };
+
+        initiateTransaction(transactionDetail);
       };
 
       const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-      html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        qrCodeSuccessCallback
+      );
 
       return () => {
         html5QrCode.stop();
-      }
+      };
+    } catch (e) {
+      console.log("error", e);
     }
-    catch (e) {
-      console.log('error', e);
-    }
-  }, [])
+  }, []);
 
-  return (
-    <div id='reader' />
-  )
-}
+  if (shouldShowTransactionPopover) {
+    return (
+      <>
+        <FullPageLoader message="Confirming Transaction..." size="small" />
+        <TransactionConfirmationOverlay
+          {...transactionDetails}
+          onApprove={() => {
+            endTransaction();
+
+            navigate(`/chat?to=${transactionDetails.to}`);
+          }}
+          onDecline={() => {
+            endTransaction();
+
+            navigate(-1);
+          }}
+          onCancel={() => {
+            endTransaction();
+
+            navigate(-1);
+          }}
+        />
+      </>
+    );
+  }
+
+  return <div id="reader" />;
+};
 
 export default QRCodeScanner;

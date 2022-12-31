@@ -9,6 +9,8 @@ import Web3 from "./helpers/Web3";
 import _ from "lodash";
 import useUserDetails from "./hooks/useUserDetails";
 import MainLayout from "./components/Layouts/MainLayout";
+import TransactionConfirmationOverlay from "./components/TransactionOverlay";
+import useTransaction from "./hooks/useTransaction";
 
 export const PAGES = {
   DASHBOARD: "dashboard",
@@ -18,16 +20,20 @@ export const PAGES = {
   IMPORT_WALLET: "import_wallet",
 };
 
-export const PROJECT_NAME = "EPI Wallet";
-
 function App() {
   const [userDetails] = useUserDetails();
   const isWalletLoaded = Web3.isAccountLoaded();
+  const [
+    shouldShowTransactionPopover,
+    transactionDetails,
+    initiateTransaction,
+    endTransaction,
+  ] = useTransaction();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!Web3.isAccountLoaded()) {
-      return navigate("/wallet/new")
+      return navigate("/wallet/new");
     }
   }, []);
 
@@ -70,7 +76,10 @@ function App() {
                   className: "message-notification",
                   onClick: () => {
                     dismissMessage();
-                    navigate(`/transaction?to=${notificationObject.from}&amount=${notificationObject.amount}`)
+                    initiateTransaction({
+                      to: notificationObject.from,
+                      value: notificationObject.amount,
+                    });
                   },
                 });
               } else {
@@ -118,6 +127,14 @@ function App() {
   return (
     <MainLayout>
       <Dashboard />
+      {shouldShowTransactionPopover && (
+        <TransactionConfirmationOverlay
+          {...transactionDetails}
+          onApprove={endTransaction}
+          onDecline={endTransaction}
+          onCancel={endTransaction}
+        />
+      )}
     </MainLayout>
   );
 }
