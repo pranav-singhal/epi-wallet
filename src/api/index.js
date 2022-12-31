@@ -1,4 +1,3 @@
-import Web3 from "../helpers/Web3";
 import * as PushAPI from "@pushprotocol/restapi";
 import {NOTIFICATION_CHANNEL} from "../components/OptInNotificationsButton";
 import { subscribeToWebNotifications } from "../helpers";
@@ -8,10 +7,6 @@ export const BASE_URL = 'https://wallet-api.consolelabs.in';
 
 export const getCurrentUser = () => {
   return localStorage.getItem('current_user');
-}
-
-export const getCurrentUserPublicKey = () => {
-  return Web3.getAccountAddress();
 }
 
 export const fetchMessages = (threadUser) => {
@@ -37,8 +32,11 @@ export const createNewUser = ({username, address}) => {
 }
 
 export const createUserSubscription = ({username, subscription}) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
   return fetch(`${BASE_URL}/user/subscription`, {
     method: 'POST',
+    headers: myHeaders,
     body: JSON.stringify({
       username,
       subscription
@@ -52,10 +50,10 @@ export const getUserSubscription = (username) => {
   .then(res => res.json());
 }
 
-export const subscribeToNotifications = () => {
+export const subscribeToNotifications = (signer) => {
   const currentUsername = localStorage.getItem('current_user');
   if (currentUsername) {
-    const signer = Web3.getEthersWallet();
+    
     const public_key = signer?.address;
     return subscribeToWebNotifications()
     .then(subscriptionObject => {

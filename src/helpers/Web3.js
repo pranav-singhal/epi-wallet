@@ -7,17 +7,17 @@ import Web3 from "web3";
 import _ from 'lodash';
 import * as ethers from "ethers";
 import {BASE_URL, getCurrentUser} from "../api";
-
+export const INFURA_API_KEY = '464843df892c4c7f8fb28e076da669f9';
 export const INFURA_URL = 'https://sepolia.infura.io/v3/464843df892c4c7f8fb28e076da669f9';
 export const BLOCK_EXPLORER_BASE_URL = 'https://sepolia.etherscan.io'
 
 export const PASSWORD = 'crypto_project_x';
 //114addfd125a71f033c64f1eeb3b59ca468481233087aaca1b94ad09e54d71d4
-class Web3Helper {
+export class Web3Helper {
   web3 = null;
 
-  constructor () {
-    this.web3 = new Web3(INFURA_URL);
+  constructor (url = INFURA_URL) {
+    this.web3 = new Web3(url);
 
     this.web3.eth.accounts.wallet.load(PASSWORD)
   }
@@ -154,5 +154,6 @@ class Web3Helper {
       })
   }
 }
-
 export default new Web3Helper();
+
+

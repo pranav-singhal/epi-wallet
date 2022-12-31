@@ -1,0 +1,103 @@
+[{
+    "name": "Ethereum Mainnet",
+    "chain": "ETH",
+    "icon": "ethereum",
+    "rpc": [
+        "https://mainnet.infura.io/v3/INFURA_API_KEY"
+    ],
+    "features": [
+        {
+            "name": "EIP155"
+        },
+        {
+            "name": "EIP1559"
+        }
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+    },
+    "infoURL": "https://ethereum.org",
+    "shortName": "eth",
+    "chainId": 1,
+    "networkId": 1,
+    "slip44": 60,
+    "ens": {
+        "registry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+    },
+    "explorers": [
+        {
+            "name": "etherscan",
+            "url": "https://etherscan.io",
+            "standard": "EIP3091"
+        }
+    ]
+},
+{
+    "name": "Sepolia",
+    "title": "Ethereum Testnet Sepolia",
+    "chain": "ETH",
+    "rpc": [
+        "https://sepolia.infura.io/v3/INFURA_API_KEY",
+        "https://rpc-sepolia.rockx.com"
+    ],
+    "faucets": [
+        "http://fauceth.komputing.org?chain=11155111&address=${ADDRESS}"
+    ],
+    "nativeCurrency": {
+        "name": "Sepolia Ether",
+        "symbol": "SEP",
+        "decimals": 18
+    },
+    "infoURL": "https://sepolia.otterscan.io",
+    "shortName": "sep",
+    "chainId": 11155111,
+    "networkId": 11155111,
+    "explorers": [
+        {
+            "name": "etherscan-sepolia",
+            "url": "https://sepolia.etherscan.io",
+            "standard": "EIP3091"
+        },
+        {
+            "name": "otterscan-sepolia",
+            "url": "https://sepolia.otterscan.io",
+            "standard": "EIP3091"
+        }
+    ]
+},
+{
+    "name": "Goerli",
+    "title": "Ethereum Testnet Goerli",
+    "chain": "ETH",
+    "rpc": [
+        "https://goerli.infura.io/v3/INFURA_API_KEY"
+    ],
+    "faucets": [
+        "http://fauceth.komputing.org?chain=5&address=${ADDRESS}",
+        "https://goerli-faucet.slock.it?address=${ADDRESS}",
+        "https://faucet.goerli.mudit.blog"
+    ],
+    "nativeCurrency": {
+        "name": "Goerli Ether",
+        "symbol": "ETH",
+        "decimals": 18
+    },
+    "infoURL": "https://goerli.net/#about",
+    "shortName": "gor",
+    "chainId": 5,
+    "networkId": 5,
+    "ens": {
+        "registry": "0x112234455c3a32fd11230c42e7bccd4a84e02010"
+    },
+    "explorers": [
+        {
+            "name": "etherscan-goerli",
+            "url": "https://goerli.etherscan.io",
+            "standard": "EIP3091"
+        }
+    ]
+}
+]

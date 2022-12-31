@@ -4,19 +4,26 @@ import { Button, Col, Row } from "antd";
 import { getUserSubscription, subscribeToNotifications } from "../../api";
 import "./style.scss";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
+import _ from "lodash";
+import useChainContext from "../../hooks/useChainContext";
+import { Web3Helper } from "../../helpers/Web3";
 
 const EnableNotificationsPopup = () => {
-  const [showPopup, setShowPopup] = useState(false);
-  const handleEnableNotificationsClick = () => {
-    subscribeToNotifications()
-      .then((res) => {
-        console.log("server response of notification subscription: ", res);
-        setShowPopup(false);
-      })
-      .catch((err) => {
-        console.log("somethihg went wrong: ", err);
-      });
-  };
+    const [showPopup, setShowPopup] = useState(false);
+    const [rpcUrl] = useChainContext();
+    const web3 = new Web3Helper(rpcUrl)
+    const signer = web3.getEthersWallet();
+    const handleEnableNotificationsClick = () => {
+        subscribeToNotifications(signer)
+        .then(res => {
+            console.log("server response of notification subscription: ", res);
+            setShowPopup(false)
+        })
+        .catch(err => {
+            console.log("somethihg went wrong: ", err)
+        })
+    }
+
 
   useEffect(() => {
     const currentUserUsername = localStorage.getItem("current_user");

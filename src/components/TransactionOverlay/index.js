@@ -8,12 +8,27 @@ import { Button, Space, Spin } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import Web3 from "../../helpers/Web3";
+import { Web3Helper } from "../../helpers/Web3";
 import useUserDetails from "../../hooks/useUserDetails";
 import _ from "lodash";
+import useChainContext from "../../hooks/useChainContext";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
 
+export const TransactionOverlayContainer = (props) => {
+  return (
+    <div className="transaction">
+      <div className="transaction-overlay" />
+      <div className="transaction-popup">
+        <div className="transaction-popup-dialog">{props.children}</div>
+      </div>
+    </div>
+  );
+};
+
+
 const TransactionOverlay = (props) => {
+  const [rpcUrl] = useChainContext();
+  const Web3 = new Web3Helper(rpcUrl);
   const gas = 30000;
   const [gasPrice, setGasPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);

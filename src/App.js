@@ -5,10 +5,11 @@ import "antd/dist/antd.css";
 import Dashboard from "./pages/Dashboard";
 import { message } from "antd";
 import { getNotifications, toTitleCase } from "./helpers";
-import Web3 from "./helpers/Web3";
+import { Web3Helper } from "./helpers/Web3";
 import _ from "lodash";
 import useUserDetails from "./hooks/useUserDetails";
 import MainLayout from "./components/Layouts/MainLayout";
+import useChainContext from "./hooks/useChainContext";
 import TransactionConfirmationOverlay from "./components/TransactionOverlay";
 import useTransaction from "./hooks/useTransaction";
 
@@ -22,7 +23,9 @@ export const PAGES = {
 
 function App() {
   const [userDetails] = useUserDetails();
-  const isWalletLoaded = Web3.isAccountLoaded();
+  const [rpcUrl] = useChainContext()
+  const web3 = new Web3Helper(rpcUrl);
+  const isWalletLoaded = web3.isAccountLoaded();
   const [
     shouldShowTransactionPopover,
     transactionDetails,
@@ -32,8 +35,8 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!Web3.isAccountLoaded()) {
-      return navigate("/wallet/new");
+    if (!web3.isAccountLoaded()) {
+      return navigate("/wallet/new")
     }
   }, []);
 
@@ -47,7 +50,7 @@ function App() {
     const tick = () => {
       isNextCallAllowed = false;
 
-      getNotifications(Web3.getAccountAddress())
+      getNotifications(web3.getAccountAddress())
         .then((_res) => {
           if (Array.isArray(_res) && _res.length > 0) {
             _.slice(_res, 0, 2).map((_notificationObject) => {

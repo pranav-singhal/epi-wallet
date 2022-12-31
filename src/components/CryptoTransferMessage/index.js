@@ -9,9 +9,10 @@ import {CheckCircleOutlined, ClockCircleOutlined, LinkOutlined} from "@ant-desig
 import { Button, message as antdMessage } from "antd";
 import _ from 'lodash';
 import React, {useEffect, useState} from "react";
-import Web3, {BLOCK_EXPLORER_BASE_URL} from "../../helpers/Web3";
+import {BLOCK_EXPLORER_BASE_URL, Web3Helper} from "../../helpers/Web3";
 import {BASE_URL} from "../../api";
 import {toTitleCase} from "../../helpers";
+import useChainContext from "../../hooks/useChainContext";
 const MESSAGETYPES = {
   SENT: 'sent',
   RECIEVED: 'recieved'
@@ -34,6 +35,8 @@ const currentUser = localStorage.getItem('current_user');
 
 
 const CryptoTransferMessage = (props) => {
+  const [rpcUrl] = useChainContext();
+  const Web3 = new Web3Helper(rpcUrl);
   const { crypto = "ETH", message } = props;
   const [messageStatus, setMessageStatus] = useState(message.status)
   const showExplorerLink = !_.isEmpty(message.hash);

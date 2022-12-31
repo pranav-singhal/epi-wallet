@@ -4,25 +4,29 @@
  * @date 17/04/22
  */
 import React, { useEffect, useState } from "react";
-import { Avatar, Badge, Button, Col, Divider, Row, Skeleton } from "antd";
+import { Avatar, Button, Divider, Dropdown, Skeleton } from "antd";
 import _ from "lodash";
 import {
   ArrowDownOutlined,
   ArrowRightOutlined,
-  CloseOutlined,
-  DownOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
-import Web3, { BLOCK_EXPLORER_BASE_URL } from "../../helpers/Web3";
+import { BLOCK_EXPLORER_BASE_URL, Web3Helper } from "../../helpers/Web3";
 import { toTitleCase } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import useUserDetails from "../../hooks/useUserDetails";
 import ChatList from "../../components/ChatList";
 import EnableNotificationsPopup from "../../components/EnableNotificationsPopup";
+import chainList from "../../helpers/chains.json";
+import ChainSwitcher from "../../components/ChainSwitcher";
+import useChainContext from "../../hooks/useChainContext";
 
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
+  const [rpcUrl] = useChainContext();
+  const web3 = new Web3Helper(rpcUrl);
+  console.log("rpcUrl: ", rpcUrl)
 
   const [userDetails] = useUserDetails(null);
   const navigate = useNavigate();
@@ -36,7 +40,7 @@ const Dashboard = (props) => {
   };
 
   const updateAccountBalanceInEth = () => {
-    Web3.getAccountBalance(Web3.getAccountAddress(), "eth").then((res) => {
+    web3.getAccountBalance(web3.getAccountAddress(), "eth").then((res) => {
       setAccountBalance(parseFloat(res));
     });
   };
@@ -50,7 +54,7 @@ const Dashboard = (props) => {
 
     const currentUser = localStorage.getItem("current_user");
     setCurrentUserDetails(userDetails[currentUser]);
-  }, [userDetails]);
+  }, [userDetails, rpcUrl]);
 
   const getAddress = () => {
     if (_.isEmpty(currentUserDetails)) {
@@ -75,10 +79,7 @@ const Dashboard = (props) => {
 
   return (
     <>
-      <div className="chain-switcher">
-        <span>Sepolia Test Network</span>
-        <DownOutlined />
-      </div>
+    <ChainSwitcher />
       <div className="wallet-info">
         <div className="wallet-info__name">
           <Avatar size={64} src={currentUserDetails.avatar} />
