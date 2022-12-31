@@ -52,7 +52,7 @@ const TransactionOverlay = (props) => {
   });
 
   const onApprove = () => {
-    Web3.sendTransaction(to, value, gas, transactionId, qrId).then(() => {
+    Web3.sendTransaction(toDetails, value, gas, transactionId, qrId).then((res) => {
       props.onApprove();
     });
   };
