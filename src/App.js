@@ -22,7 +22,7 @@ export const PAGES = {
 
 function App() {
   const [userDetails] = useUserDetails();
-  const [, web3] = useChainContext()
+  const [web3] = useChainContext()
   const isWalletLoaded = web3?.isAccountLoaded();
   const [
     shouldShowTransactionPopover,

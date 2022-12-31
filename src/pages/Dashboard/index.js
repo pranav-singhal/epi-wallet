@@ -17,14 +17,13 @@ import { useNavigate } from "react-router-dom";
 import useUserDetails from "../../hooks/useUserDetails";
 import ChatList from "../../components/ChatList";
 import EnableNotificationsPopup from "../../components/EnableNotificationsPopup";
-import chainList from "../../helpers/chains.json";
 import ChainSwitcher from "../../components/ChainSwitcher";
 import useChainContext from "../../hooks/useChainContext";
 
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
-  const [rpcUrl, web3] = useChainContext();
+  const [web3, rpcUrl] = useChainContext();
 
   const [userDetails] = useUserDetails(null);
   const navigate = useNavigate();

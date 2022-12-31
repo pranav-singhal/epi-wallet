@@ -8,7 +8,7 @@ import useChainContext from "../../hooks/useChainContext";
 
 const EnableNotificationsPopup = () => {
     const [showPopup, setShowPopup] = useState(false);
-    const [, web3] = useChainContext();
+    const [web3] = useChainContext();
     const signer = web3?.getEthersWallet();
     const handleEnableNotificationsClick = () => {
         subscribeToNotifications(signer)

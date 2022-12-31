@@ -26,7 +26,7 @@ export const TransactionOverlayContainer = (props) => {
 
 
 const TransactionOverlay = (props) => {
-  const [, Web3] = useChainContext();
+  const [Web3] = useChainContext();
   const gas = 53000;
   const [gasPrice, setGasPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);

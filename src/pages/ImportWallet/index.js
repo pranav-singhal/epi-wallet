@@ -10,7 +10,7 @@ const { Title, Paragraph } = Typography;
 
 const ImportWalletPage = ({ userDetails }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [, web3] = useChainContext();
+  const [web3] = useChainContext();
 
   const setWallet = (values) => {
     setIsSubmitting(true);

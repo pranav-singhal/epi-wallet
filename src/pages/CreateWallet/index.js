@@ -12,7 +12,7 @@ import useChainContext from "../../hooks/useChainContext";
 const { Title, Paragraph } = Typography;
 
 const CreateWallet = () => {
-  const [, Web3] = useChainContext();
+  const [Web3] = useChainContext();
   const navigate = useNavigate();
 
   const [userDetails] = useUserDetails();

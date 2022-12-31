@@ -35,7 +35,7 @@ const currentUser = localStorage.getItem('current_user');
 
 
 const CryptoTransferMessage = (props) => {
-  const [, Web3] = useChainContext();
+  const [Web3] = useChainContext();
   const { crypto = "ETH", message } = props;
   const [messageStatus, setMessageStatus] = useState(message.status)
   const showExplorerLink = !_.isEmpty(message.hash);
