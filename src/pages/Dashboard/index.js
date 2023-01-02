@@ -4,7 +4,7 @@
  * @date 17/04/22
  */
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Divider, Dropdown, Skeleton } from "antd";
+import { Avatar, Button, Divider, Skeleton } from "antd";
 import _ from "lodash";
 import {
   ArrowDownOutlined,
@@ -13,7 +13,6 @@ import {
 } from "@ant-design/icons";
 import { BLOCK_EXPLORER_BASE_URL } from "../../helpers/Web3";
 import { toTitleCase } from "../../helpers";
-import { useNavigate } from "react-router-dom";
 import useUserDetails from "../../hooks/useUserDetails";
 import ChatList from "../../components/ChatList";
 import EnableNotificationsPopup from "../../components/EnableNotificationsPopup";
@@ -26,11 +25,6 @@ const Dashboard = (props) => {
   const [web3, rpcUrl] = useChainContext();
 
   const [userDetails] = useUserDetails(null);
-  const navigate = useNavigate();
-
-  const goToNewRequestPage = () => {
-    navigate("/request/new");
-  };
 
   const updateAccountBalanceInEth = () => {
     web3.getAccountBalance(web3.getAccountAddress(), "eth").then((res) => {
@@ -101,7 +95,9 @@ const Dashboard = (props) => {
           <div>{accountBalance.toFixed(5)}</div>
         </div>
         <div className="wallet-info__actions">
-          <div onClick={goToNewRequestPage}>
+          <div onClick={() => {
+            props.initiateTransaction({type: 'request'})
+          }}>
             <Button
               type="primary"
               icon={<ArrowDownOutlined />}

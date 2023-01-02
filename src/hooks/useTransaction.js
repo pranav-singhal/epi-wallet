@@ -14,10 +14,11 @@ const useTransaction = () => {
    * @param opts {Object} - Arguments for transaction
    * @param opts.to {string} - Address of the EOA whom the funds need to be sent
    * @param opts.value {number} - Amount that needs to be sent
+   * @param opts.type {String} - [send || request] is the transaction for sending or requesting funds
    * @param opts.qrId {string|number} - Unique id for the QR code to which amount is going to be sent
    * @param opts.transactionId {string|number} - Unique id of the transaction that is being approved
    */
-  const initiateTransaction = (opts) => {
+  const initiateTransaction = (opts= {type: 'send'}) => {
     setShowPopover(true);
     setTransactionState(opts);
   };

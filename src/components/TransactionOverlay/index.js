@@ -14,6 +14,7 @@ import useChainContext from "../../hooks/useChainContext";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
 import TransactionDetails from "./TransactionDetails";
 import { useNavigate } from "react-router-dom";
+import {sendMessageForRequest} from "../../api";
 
 const ENTER_DETAILS = "enter_details";
 const CONFIRM_TRANSACTION = "confirm_transaction";
@@ -77,25 +78,40 @@ const TransactionOverlay = (props) => {
       gas,
       props.transactionId,
       props.qrId
-    ).then((res) => {
+    ).then(() => {
       props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
       props.onApprove();
     });
   };
 
   const getContent = () => {
+    const transactionType = props.type
     switch (activeStepKey) {
       case ENTER_DETAILS:
-        return (
-          <TransactionDetails
-            users={_.values(userDetails)}
-            onNext={(amount, selectedUser) => {
-              setAmount(amount);
-              setToUsername(selectedUser);
-              setActiveStepIndex(activeStepIndex + 1);
-            }}
-          />
-        );
+          return (
+              <TransactionDetails
+                  type={transactionType}
+                  users={_.values(userDetails)}
+                  onNext={(amount, selectedUser) => {
+                    if (transactionType === 'send') {
+                      setAmount(amount);
+                      setToUsername(selectedUser);
+                      setActiveStepIndex(activeStepIndex + 1);
+                    }
+
+                    if (transactionType === 'request') {
+                      setIsLoading(true);
+                      sendMessageForRequest({
+                        newMessageAmount: amount,
+                        threadUserName: selectedUser
+                      })
+                          .then(() => {
+                            navigate(`/chat?to=${selectedUser}`);
+                          })
+                    }
+                }}
+              />
+          );
       case CONFIRM_TRANSACTION:
         return (
           <ConfirmTransaction

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import TransactionConfirmationOverlay from "../../components/TransactionOverlay";
 import FullPageLoader from "../../components/FullPageLoader";
 
-const QRCodeScanner = (props) => {
+const QRCodeScanner = () => {
   const [
     shouldShowTransactionPopover,
     transactionDetails,

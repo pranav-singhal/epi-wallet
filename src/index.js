@@ -10,7 +10,6 @@ import reportWebVitals from './reportWebVitals';
 import CreateWallet from "./pages/CreateWallet";
 import ImportWalletPage from "./pages/ImportWallet";
 import SetupWallet from "./pages/SetupWallet";
-import NewRequestPage from "./components/NewRequestPage";
 import QRCodeScanner from "./pages/QRCodeScanner";
 import ChatPage from "./pages/ChatPage";
 import chainList from "./helpers/chains.json";
@@ -72,10 +71,6 @@ const router = createBrowserRouter([
   {
     path: "/wallet/import",
     element: <ImportWalletPage />,
-  },
-  {
-    path: "/request/new",
-    element: <NewRequestPage />,
   },
   {
     path: "/scan",

@@ -5,7 +5,7 @@
  */
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { Avatar, Button, Input, Select, Typography } from "antd";
+import { Avatar, Button, Input, Select } from "antd";
 import styled from "styled-components";
 import React, { useState } from "react";
 
@@ -17,6 +17,17 @@ const ReceiverOptionContainer = styled.div`
   align-items: center;
 `;
 
+const getTitleByTransactionType = (type) => {
+    switch (type) {
+        case 'send':
+            return "Send to:";
+        case 'request':
+            return "Request from";
+        default:
+            return 'Select User';
+    }
+}
+
 const TransactionDetails = (props) => {
   const [amount, setAmount] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -24,7 +35,9 @@ const TransactionDetails = (props) => {
   return (
     <div className="transaction-details">
       <div className="transaction-details-form-item">
-        <div>Send To:</div>
+          {
+              getTitleByTransactionType(props.type)
+          }
         <Select
           showSearch
           placeholder="Search via Username"

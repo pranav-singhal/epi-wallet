@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Col, Row } from "antd";
+import { Button } from "antd";
 import { getUserSubscription, subscribeToNotifications } from "../../api";
 import "./style.scss";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
@@ -29,7 +29,7 @@ const EnableNotificationsPopup = () => {
         subscriptionObjectStored = _subscriptionObjectStored;
         return navigator.serviceWorker.register("/service-worker.js");
       })
-      .then((registration) => {
+      .then(() => {
         return navigator.serviceWorker.ready;
       })
       .then((swRegistration) => {
@@ -86,10 +86,7 @@ const EnableNotificationsPopup = () => {
 
 export default EnableNotificationsPopup;
 
-// TODO - 1. get subscription for user
-// 2. if user is not subscribed - show popup
-// 3. on enable - save the notification to backend
-// 4. store vapid keys on aws
-// 5. push the server code to aws so that vapid keys are picked from aws
+// TODO:
+// 1. fix browser notifications
+// 2. handle decline state
 // 6. Implement password lock?
-// 7. open the url of the chat page for which notification is received
