@@ -13,7 +13,6 @@ import SetupWallet from "./pages/SetupWallet";
 import NewRequestPage from "./components/NewRequestPage";
 import QRCodeScanner from "./pages/QRCodeScanner";
 import ChatPage from "./pages/ChatPage";
-import NewSendMoneyPage from './components/NewSendMoneyPage';
 import chainList from "./helpers/chains.json";
 import _ from 'lodash';
 import {INFURA_API_KEY, Web3Helper} from "./helpers/Web3";
@@ -77,10 +76,6 @@ const router = createBrowserRouter([
   {
     path: "/request/new",
     element: <NewRequestPage />,
-  },
-  {
-    path: "/send/new",
-    element: <NewSendMoneyPage />,
   },
   {
     path: "/scan",
