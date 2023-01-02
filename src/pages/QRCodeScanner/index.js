@@ -21,33 +21,45 @@ const QRCodeScanner = (props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const html5QrCode = new Html5Qrcode("reader");
+    const userAgent = window.navigator.userAgent.toLowerCase(),
+        safari = /safari/.test( userAgent ),
+        ios = /iphone|ipod|ipad/.test( userAgent );
+    const isWebView = Boolean(ios) && !safari;
 
-      const qrCodeSuccessCallback = (decodedText) => {
-        const qrBody = JSON.parse(decodedText),
-          transactionDetail = {
-            to: qrBody.vendorName,
-            value: qrBody.amount,
-            qrId: qrBody.QRId,
-          };
+    // do not try to mount the scanner for webviews.
+    // qr code scanning is handled explicitly in the app
+    if (!isWebView) {
+        try {
+            const html5QrCode = new Html5Qrcode("reader");
 
-        initiateTransaction(transactionDetail);
-      };
+            const qrCodeSuccessCallback = (decodedText) => {
+                const qrBody = JSON.parse(decodedText),
+                    transactionDetail = {
+                        to: qrBody.vendorName,
+                        value: qrBody.amount,
+                        qrId: qrBody.QRId,
+                    };
 
-      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+                initiateTransaction(transactionDetail);
+            };
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        qrCodeSuccessCallback
-      );
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-      return () => {
-        html5QrCode.stop();
-      };
-    } catch (e) {
-      console.log("error", e);
+            html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                qrCodeSuccessCallback,
+                () => {
+                    console.log("something went wrong")
+                }
+            );
+
+            return () => {
+                html5QrCode.stop();
+            };
+        } catch (e) {
+            console.log("error", e);
+        }
     }
   }, []);
 
