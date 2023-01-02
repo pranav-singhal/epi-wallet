@@ -32,10 +32,6 @@ const Dashboard = (props) => {
     navigate("/request/new");
   };
 
-  const goToNewSendMoneyPage = () => {
-    navigate("/send/new");
-  };
-
   const updateAccountBalanceInEth = () => {
     web3.getAccountBalance(web3.getAccountAddress(), "eth").then((res) => {
       setAccountBalance(parseFloat(res));
@@ -76,7 +72,7 @@ const Dashboard = (props) => {
 
   return (
     <>
-    <ChainSwitcher />
+      <ChainSwitcher />
       <div className="wallet-info">
         <div className="wallet-info__name">
           <Avatar size={64} src={currentUserDetails.avatar} />
@@ -113,7 +109,7 @@ const Dashboard = (props) => {
             />
             <div>Request</div>
           </div>
-          <div onClick={goToNewSendMoneyPage}>
+          <div onClick={() => props.initiateTransaction()}>
             <Button
               type="primary"
               icon={<ArrowRightOutlined />}

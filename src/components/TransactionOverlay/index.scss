@@ -1,6 +1,7 @@
 .transaction {
   @import "ConfirmTransaction";
   @import "ApproveSlider";
+  @import "TransactionDetails";
 
   &-heading {
     display: flex;

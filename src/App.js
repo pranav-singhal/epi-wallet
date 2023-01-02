@@ -22,7 +22,7 @@ export const PAGES = {
 
 function App() {
   const [userDetails] = useUserDetails();
-  const [web3] = useChainContext()
+  const [web3] = useChainContext();
   const isWalletLoaded = web3?.isAccountLoaded();
   const [
     shouldShowTransactionPopover,
@@ -34,7 +34,7 @@ function App() {
 
   useEffect(() => {
     if (!web3?.isAccountLoaded()) {
-      return navigate("/wallet/new")
+      return navigate("/wallet/new");
     }
   }, []);
 
@@ -127,9 +127,10 @@ function App() {
 
   return (
     <MainLayout>
-      <Dashboard />
+      <Dashboard initiateTransaction={initiateTransaction} />
       {shouldShowTransactionPopover && (
         <TransactionConfirmationOverlay
+          shouldNavigateToReceiver
           {...transactionDetails}
           onApprove={endTransaction}
           onDecline={endTransaction}

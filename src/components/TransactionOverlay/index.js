@@ -12,18 +12,16 @@ import useUserDetails from "../../hooks/useUserDetails";
 import _ from "lodash";
 import useChainContext from "../../hooks/useChainContext";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
+import TransactionDetails from "./TransactionDetails";
+import { useNavigate } from "react-router-dom";
 
-export const TransactionOverlayContainer = (props) => {
-  return (
-    <div className="transaction">
-      <div className="transaction-overlay" />
-      <div className="transaction-popup">
-        <div className="transaction-popup-dialog">{props.children}</div>
-      </div>
-    </div>
-  );
+const ENTER_DETAILS = "enter_details";
+const CONFIRM_TRANSACTION = "confirm_transaction";
+
+const STEP_TITLES = {
+  [ENTER_DETAILS]: "Transaction Details",
+  [CONFIRM_TRANSACTION]: "Confirm Transaction",
 };
-
 
 const TransactionOverlay = (props) => {
   const [Web3] = useChainContext();
@@ -32,12 +30,35 @@ const TransactionOverlay = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userDetails, userDetailsLoaded] = useUserDetails();
 
-  const { to, value, qrId, transactionId } = props;
+  // Transaction Details - Start
+  const [amount, setAmount] = useState(0);
+  const [toUsername, setToUsername] = useState("");
+  // Transaction Details - End
+
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [steps, setSteps] = useState([]);
+  const activeStepKey = _.isEmpty(steps) ? null : steps[activeStepIndex];
 
   const totalGasAmount = gas * gasPrice;
   const currentUserName = localStorage.getItem("current_user");
   const fromDetails = _.get(userDetails, currentUserName);
-  const toDetails = _.get(userDetails, to);
+  const toDetails = _.get(userDetails, toUsername);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const transactionSteps = [];
+    if (_.isEmpty(props.to) || !props.value) {
+      transactionSteps.push(ENTER_DETAILS);
+    } else {
+      props.value && setAmount(props.value);
+      !_.isEmpty(props.to) && setToUsername(props.to);
+    }
+
+    transactionSteps.push(CONFIRM_TRANSACTION);
+
+    setSteps(transactionSteps);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -50,12 +71,51 @@ const TransactionOverlay = (props) => {
   });
 
   const onApprove = () => {
-    Web3.sendTransaction(toDetails, value, gas, transactionId, qrId).then((res) => {
+    Web3.sendTransaction(
+      toDetails,
+      amount,
+      gas,
+      props.transactionId,
+      props.qrId
+    ).then((res) => {
+      props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
       props.onApprove();
     });
   };
 
-  if (isLoading || !userDetailsLoaded) {
+  const getContent = () => {
+    switch (activeStepKey) {
+      case ENTER_DETAILS:
+        return (
+          <TransactionDetails
+            users={_.values(userDetails)}
+            onNext={(amount, selectedUser) => {
+              setAmount(amount);
+              setToUsername(selectedUser);
+              setActiveStepIndex(activeStepIndex + 1);
+            }}
+          />
+        );
+      case CONFIRM_TRANSACTION:
+        return (
+          <ConfirmTransaction
+            from={fromDetails}
+            to={toDetails}
+            value={amount}
+            gas={totalGasAmount}
+            onDecline={props.onDecline}
+            onApprove={onApprove}
+          />
+        );
+    }
+  };
+
+  if (
+    isLoading ||
+    !userDetailsLoaded ||
+    _.isEmpty(steps) ||
+    _.isEmpty(activeStepKey)
+  ) {
     return (
       <BottomOverlayLayout className="transaction">
         <div className="transaction-spinner">
@@ -68,7 +128,7 @@ const TransactionOverlay = (props) => {
   return (
     <BottomOverlayLayout className="transaction">
       <div className="transaction-heading">
-        <div>Confirm Transaction</div>
+        <div>{STEP_TITLES[activeStepKey]}</div>
         <Button
           shape="circle"
           type="default"
@@ -77,16 +137,7 @@ const TransactionOverlay = (props) => {
           onClick={props.onCancel}
         />
       </div>
-      <div className="transaction-content">
-        <ConfirmTransaction
-          from={fromDetails}
-          to={toDetails}
-          value={value}
-          gas={totalGasAmount}
-          onDecline={props.onDecline}
-          onApprove={onApprove}
-        />
-      </div>
+      <div className="transaction-content">{getContent()}</div>
     </BottomOverlayLayout>
   );
 };
@@ -95,15 +146,15 @@ TransactionOverlay.propTypes = {
   to: PropTypes.string,
   value: PropTypes.number,
   qrId: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
-  transactionId: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
+  transactionId: PropTypes.number,
   onApprove: PropTypes.func.isRequired,
   onDecline: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  shouldNavigateToReceiver: PropTypes.bool,
 };
 
 TransactionOverlay.defaultProps = {
-  to: "pranav",
-  value: 0.1,
+  shouldNavigateToReceiver: false,
 };
 
 export default TransactionOverlay;
