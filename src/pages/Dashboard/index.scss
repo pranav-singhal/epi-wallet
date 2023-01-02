@@ -1,4 +1,8 @@
 .chat-list {
+  overflow: auto;
+  margin-top: -16px;
+  margin-bottom: 16px;
+
   &-row {
     padding: 20px 15px;
     border-bottom: 1px solid rgb(235, 237, 240);
@@ -26,7 +30,7 @@
   }
 
   .ant-ribbon-placement-end {
-    right: 0px!important;
+    right: 0px !important;
     top: 1px;
   }
 }
@@ -40,7 +44,6 @@
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  height: 50%;
   justify-content: center;
 
   &__name {
@@ -95,6 +98,8 @@
 }
 
 .wallet-info-loading {
+  margin-top: 48px;
+
   .ant-skeleton-title {
     margin-left: auto;
     margin-right: auto;
