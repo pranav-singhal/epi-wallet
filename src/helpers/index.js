@@ -84,3 +84,22 @@ export const subscribeToWebNotifications = () => {
         console.error("unable to register service worker: ", err)
       })
 }
+
+
+export const isWebView = () => {
+  const userAgent = window.navigator.userAgent.toLowerCase(),
+  safari = /safari/.test( userAgent ),
+  ios = /iphone|ipod|ipad/.test( userAgent );
+const isWebView = Boolean(ios) && !safari;
+
+return isWebView;
+}
+
+export const isSafariIos = () => {
+  const userAgent = window.navigator.userAgent.toLowerCase(),
+  safari = /safari/.test( userAgent ),
+  ios = /iphone|ipod|ipad/.test( userAgent );
+const isSafariIos = Boolean(ios) && safari;
+
+return isSafariIos
+}

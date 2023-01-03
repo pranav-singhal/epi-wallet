@@ -1,6 +1,6 @@
 import * as PushAPI from "@pushprotocol/restapi";
 import {NOTIFICATION_CHANNEL} from "../components/OptInNotificationsButton";
-import { subscribeToWebNotifications } from "../helpers";
+import { isSafariIos, isWebView, subscribeToWebNotifications } from "../helpers";
 
 export const BASE_URL = 'https://wallet-api.consolelabs.in';
 // export const BASE_URL = 'http://localhost:1337';
@@ -62,13 +62,24 @@ export const subscribeToNotifications = (signer) => {
   if (currentUsername) {
     
     const public_key = signer?.address;
-    return subscribeToWebNotifications()
+    
+    return (() => {
+      if (isWebView() || isSafariIos()) {
+        return Promise.resolve()
+      }
+
+      return subscribeToWebNotifications()
     .then(subscriptionObject => {
-      return createUserSubscription({
-        username: currentUsername,
-        subscription: JSON.stringify(subscriptionObject)
-      })
+      console.log("subscriptionObject: ", subscriptionObject);
+      if (subscriptionObject) {
+        return createUserSubscription({
+          username: currentUsername,
+          subscription: JSON.stringify(subscriptionObject)
+        })
+      }
+      return Promise.resolve();
     })
+    })()
     .then(subscriptionObject => {
       return PushAPI.channels.subscribe({
         signer,

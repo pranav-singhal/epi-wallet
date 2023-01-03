@@ -6,6 +6,7 @@ import { createNewUser, subscribeToNotifications } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 import useChainContext from "../../hooks/useChainContext";
+import { subscribeToWebNotifications } from "../../helpers";
 const { Title, Paragraph } = Typography;
 
 const ImportWalletPage = ({ userDetails }) => {
@@ -23,6 +24,8 @@ const ImportWalletPage = ({ userDetails }) => {
       .then((_res) => {
         web3.addNewWallet(values.pvtKey, PASSWORD);
         localStorage.setItem("current_user", values.username);
+        const signer = web3?.getEthersWallet();
+        return subscribeToWebNotifications(signer);
       })
       .then((notifResult) => {
         window.location.reload();

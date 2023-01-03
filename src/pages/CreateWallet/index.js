@@ -30,6 +30,8 @@ const CreateWallet = () => {
         Web3.addNewWallet(walletObject?.privateKey, PASSWORD);
 
         localStorage.setItem("current_user", values?.username);
+        const signer = Web3?.getEthersWallet();
+        return subscribeToNotifications(signer);
       })
       .then(() => navigate("/"))
       .catch(console.error);

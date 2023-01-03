@@ -13,7 +13,7 @@ const useIsSubscribed = (public_key) => {
         env: 'staging'
       })
           .then(res => {
-            const channelArray = res.map(item => item?.channel);
+            const channelArray = res?.map(item => item?.channel);
             if (Array.isArray(channelArray) && channelArray.includes(NOTIFICATION_CHANNEL)) {
               setIsSubscribed(true);
             }

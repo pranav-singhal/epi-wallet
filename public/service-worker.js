@@ -1,8 +1,35 @@
+self.addEventListener('activate', function(event) {
+    console.log("Activated")
+    event.waitUntil(
+      caches.keys().then(function(cacheNames) {
+          console.log("cache names:", cacheNames)
+        return Promise.all(
+          cacheNames.map(function(cacheName) {
+              console.log("cache keys", cacheName)
+            return caches.delete(cacheName);
+          })
+        );
+      })
+    );
+  });
+
+const getNotificationString = (notificationData) => {
+
+    if (notificationData?.type === 'request') {
+        return `${notificationData?.from || 'Someone'} has requested ${notificationData.amount} ETH from you`
+    }
+
+    if (notificationData?.type === 'recieved') {
+        return `${notificationData?.from || 'Someone'} has sent you ${notificationData.amount} ETH`
+    }
+}
+
 self.addEventListener('push', (event) => {
+
     const promiseChain = self.registration.showNotification("From EPI ", {
-        body: "Arvind has requested money from you"
+        body: getNotificationString(event.data.json())
     })
-    console.log('promise chain: ', promiseChain);
+
     event.waitUntil(promiseChain);
 })
 

@@ -5,6 +5,7 @@ import { getUserSubscription, subscribeToNotifications } from "../../api";
 import "./style.scss";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
 import useChainContext from "../../hooks/useChainContext";
+import { isSafariIos, isWebView } from "../../helpers";
 
 const EnableNotificationsPopup = () => {
     const [showPopup, setShowPopup] = useState(false);
@@ -23,7 +24,10 @@ const EnableNotificationsPopup = () => {
   useEffect(() => {
     const currentUserUsername = localStorage.getItem("current_user");
     let subscriptionObjectStored = "";
-    getUserSubscription(currentUserUsername)
+
+    if (!isWebView() && !isSafariIos()) {
+
+      getUserSubscription(currentUserUsername)
       .then((_subscriptionObjectStored) => {
         subscriptionObjectStored = _subscriptionObjectStored;
         return navigator.serviceWorker.register("/service-worker.js");
@@ -45,6 +49,7 @@ const EnableNotificationsPopup = () => {
           console.log("user subscribed to notifications!!!");
         }
       });
+    }
   }, []);
 
   if (!showPopup) {
