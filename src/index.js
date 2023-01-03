@@ -15,6 +15,7 @@ import ChatPage from "./pages/ChatPage";
 import chainList from "./helpers/chains.json";
 import _ from 'lodash';
 import {INFURA_API_KEY, Web3Helper} from "./helpers/Web3";
+import NewTransactionPage from './pages/NewTransactionPage';
 
 // [start]: initial state
 export const ChainContext = createContext(chainList[1]);
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
     path: "/chat",
     element: <ChatPage />,
   },
+  {
+    path: "/transaction/new",
+    element: <NewTransactionPage />
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
