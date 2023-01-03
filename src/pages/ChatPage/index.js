@@ -6,7 +6,7 @@
 import { Button, Empty, InputNumber } from "antd";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import { fetchMessages, sendMessageForRequest } from "../../api";
+import { fetchMessages, sendMessageForRequest, updateTransactionStatus } from "../../api";
 import CryptoTransferMessage from "../../components/CryptoTransferMessage";
 import { useNavigate } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
@@ -163,7 +163,23 @@ const ChatPage = () => {
         <TransactionConfirmationOverlay
           {...transactionDetails}
           onApprove={endTransaction}
-          onDecline={endTransaction}
+          onDecline={() => {
+          
+            setIsLoading(true);
+            updateTransactionStatus({txStatus: "declined", id: transactionDetails?.transactionId})
+            .then(() => {
+              return fetchMessages(to)
+            })
+            .then((res) => {
+              setMessageArray(res.messages);
+              
+              endTransaction();
+            })
+            .finally(() => {
+              setIsLoading(false);
+            })
+            
+          }}
           onCancel={endTransaction}
         />
       )}

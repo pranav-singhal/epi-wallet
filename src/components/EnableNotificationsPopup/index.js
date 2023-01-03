@@ -20,7 +20,6 @@ const EnableNotificationsPopup = () => {
         })
     }
 
-
   useEffect(() => {
     const currentUserUsername = localStorage.getItem("current_user");
     let subscriptionObjectStored = "";
@@ -36,11 +35,6 @@ const EnableNotificationsPopup = () => {
         return swRegistration.pushManager.getSubscription();
       })
       .then((_subscriptionObjectBrowser) => {
-        console.log(
-          "browser value, stored value",
-          JSON.stringify(_subscriptionObjectBrowser),
-          subscriptionObjectStored?.userSubscription?.subscription
-        );
         if (
           JSON.stringify(_subscriptionObjectBrowser) !==
           subscriptionObjectStored?.userSubscription?.subscription

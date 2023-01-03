@@ -9,6 +9,13 @@ export const getCurrentUser = () => {
   return localStorage.getItem('current_user');
 }
 
+const getHeaders = () => {
+  const myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          return myHeaders;
+}
+
 export const fetchMessages = (threadUser) => {
   return fetch(`${BASE_URL}/messages?sender=${getCurrentUser()}&recipient=${threadUser}`)
     .then(res => res.json())
@@ -100,4 +107,15 @@ export const sendMessageForRequest = ({newMessageAmount, threadUserName}) => {
     }),
   })
       .then(response => response.json())
+}
+
+export const updateTransactionStatus = ({txStatus, id}) => {
+  return fetch(`${BASE_URL}/transaction/${id}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify({
+      status: txStatus,
+      id,
+    })
+  })
 }

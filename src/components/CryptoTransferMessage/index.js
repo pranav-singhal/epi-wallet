@@ -5,7 +5,7 @@
  */
 import classNames from "classnames";
 import moment from "moment";
-import {CheckCircleOutlined, ClockCircleOutlined, LinkOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, ClockCircleOutlined, LinkOutlined, StopOutlined} from "@ant-design/icons";
 import { Button, message as antdMessage } from "antd";
 import _ from 'lodash';
 import React, {useEffect, useState} from "react";
@@ -26,10 +26,28 @@ const getMessageStatus = (currentStatus) => {
     case "unconfirmed":
       return "Pending Approval";
     case "completed":
+      return "Done";
+    case "declined":
+      return "Declined";
     default:
       return "Done";
   }
 };
+
+const getMessageIcon = (currentStatus) => {
+  switch (currentStatus) {
+    case "pending":
+      return <ClockCircleOutlined />
+      case "unconfirmed":
+        return <ClockCircleOutlined />
+        case "completed": 
+        return <CheckCircleOutlined />
+        case "declined":
+          return <StopOutlined />
+    default:
+      break;
+  }
+}
 
 const currentUser = localStorage.getItem('current_user');
 
@@ -87,7 +105,7 @@ const CryptoTransferMessage = (props) => {
   return (
     <div className="crypto-message">
       <div
-        className={classNames("crypto-message-card", {
+        className={classNames(`crypto-message-card ${messageStatus === 'declined' && 'crypto-message-card__declined'} `, {
           "float-right": message.type === MESSAGETYPES.SENT,
         })}
       >
@@ -114,11 +132,9 @@ const CryptoTransferMessage = (props) => {
               window.open(`${BLOCK_EXPLORER_BASE_URL}/tx/${message.hash}`)
             }}
           >
-            {messageStatus === "completed" ? (
-              <CheckCircleOutlined />
-            ) : (
-              <ClockCircleOutlined />
-            )}
+           {
+             getMessageIcon(messageStatus)
+           }
             <span>{getMessageStatus(messageStatus)}</span>
             {
               showExplorerLink &&
