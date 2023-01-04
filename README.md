@@ -4,9 +4,13 @@ You can access the EPI Wallet [here](http://wallet.consolelabs.in)
 
 ## Available Scripts
 
+Install the packages by running 
+
+### `npm install`
+
 In the project directory, you can run:
 
-### `npm start`
+### `npm start:dev`
 
 Runs the wallet in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
