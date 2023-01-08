@@ -39,7 +39,7 @@ function App() {
     }
     if (window.webkit) {
       console.log("webkit: found")
-      window.webkit.messageHandlers.observer.postMessage(`username being sent: ${username}`);
+      window.webkit.messageHandlers.observer.postMessage(username);
 
     } else {
       console.log("webkit: not found")
