@@ -33,6 +33,17 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const username = localStorage.getItem('current_user');
+    if (!username) {
+      console.log("no username found!!!: ", username);
+    }
+    if (window.webkit) {
+      console.log("webkit: found")
+      window.webkit.messageHandlers.observer.postMessage(`username being sent: ${username}`);
+
+    } else {
+      console.log("webkit: not found")
+    }
     if (!web3?.isAccountLoaded()) {
       return navigate("/wallet/new");
     }
@@ -76,15 +87,16 @@ function App() {
                   duration: 6,
                   className: "message-notification",
                   onClick: () => {
+                    navigate(`/chat?to=${notificationObject.from}`)
                     dismissMessage();
-                    initiateTransaction({
-                      to: notificationObject.from,
-                      value: notificationObject.amount,
-                    });
+                    // initiateTransaction({
+                    //   to: notificationObject.from,
+                    //   value: notificationObject.amount,
+                    // });
                   },
                 });
               } else {
-                message.success({
+                const dismissMessage = message.success({
                   content: (
                     <span>
                       <b>{toTitleCase(notificationObject.from)}</b> has sent{" "}
@@ -101,6 +113,10 @@ function App() {
                     </span>
                   ),
                   className: "message-notification",
+                  onClick: () => {
+                    navigate(`/chat?to=${notificationObject.from}`)
+                    dismissMessage()
+                  }
                 });
               }
             });

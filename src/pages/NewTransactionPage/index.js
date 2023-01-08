@@ -53,12 +53,12 @@ import useQuery from "../../hooks/useQuery";
            onDecline={() => {
              endTransaction();
  
-             navigate(-1);
+             navigate('/');
            }}
            onCancel={() => {
              endTransaction();
  
-             navigate(-1);
+             navigate('/');
            }}
          />
        </>
