@@ -2,7 +2,7 @@ import * as PushAPI from "@pushprotocol/restapi";
 import {NOTIFICATION_CHANNEL} from "../components/OptInNotificationsButton";
 import { isSafariIos, isWebView, subscribeToWebNotifications } from "../helpers";
 
-export const BASE_URL = 'https://wallet-api.consolelabs.in';
+export const BASE_URL = 'https://epi-api-b.consolelabs.in';
 // export const BASE_URL = 'http://localhost:1337';
 
 export const getCurrentUser = () => {
