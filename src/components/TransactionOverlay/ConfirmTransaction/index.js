@@ -8,6 +8,7 @@ import { Avatar } from "antd";
 import { toTitleCase } from "../../../helpers";
 import PropTypes from "prop-types";
 import { RightOutlined } from "@ant-design/icons";
+import TransactionErrorMesage from "../TransactionErrorMessage";
 
 const Account = (props) => {
   const { name, avatar } = props;
@@ -44,10 +45,15 @@ const ConfirmTransaction = (props) => {
         </div>
       </div>
       <ApproveSlider
+      setIsError={props.setIsError}
+        isError={props.isError}
         onApprove={props.onApprove}
         onDecline={props.onDecline}
         className="confirm-transaction-cta"
       />
+      {
+        props.isError && <TransactionErrorMesage message={props.isError} />
+      }
     </div>
   );
 };

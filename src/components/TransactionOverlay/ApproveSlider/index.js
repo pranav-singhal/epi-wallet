@@ -5,7 +5,7 @@
  */
 import SwipeButton from "./SwipeButton";
 import { CloseCircleOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
@@ -17,6 +17,12 @@ const ApproveSlider = (props) => {
     props.onApprove();
   };
 
+  useEffect(() => {
+    if (props.isError) {
+      setIsTransactionProcessing(false);
+    }
+  }, [props.isError])
+
   return (
     <div className={classnames("approve-buttons", props.className)}>
       <div
@@ -27,7 +33,7 @@ const ApproveSlider = (props) => {
       >
         <CloseCircleOutlined style={{ fontSize: "16px" }} />
       </div>
-      <SwipeButton onComplete={onApprove} />
+      <SwipeButton setIsError={props.setIsError} isError={props.isError} onComplete={onApprove} />
     </div>
   );
 };

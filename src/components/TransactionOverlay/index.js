@@ -31,6 +31,8 @@ const TransactionOverlay = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userDetails, userDetailsLoaded] = useUserDetails();
 
+  const [isError, setIsError] = useState(false);
+
   // Transaction Details - Start
   const [amount, setAmount] = useState(0);
   const [toUsername, setToUsername] = useState("");
@@ -81,7 +83,8 @@ const TransactionOverlay = (props) => {
     ).then(() => {
       props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
       props.onApprove();
-    });
+    })
+    .catch(err => setIsError(err.message.split("Returned error: ")[1]))
   };
 
   const getContent = () => {
@@ -115,6 +118,8 @@ const TransactionOverlay = (props) => {
       case CONFIRM_TRANSACTION:
         return (
           <ConfirmTransaction
+          setIsError={setIsError}
+            isError={isError}
             from={fromDetails}
             to={toDetails}
             value={amount}

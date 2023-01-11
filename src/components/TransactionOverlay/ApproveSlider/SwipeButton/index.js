@@ -74,10 +74,28 @@ function SwipeButton(props) {
     props.onComplete();
   }, [isCompleted]);
 
+
+
+  useEffect(() => {
+    if (props.isError)  {
+      // if the transaction throws an error
+      // reset the swipe button to initial state
+      setCurrentX(0);
+      setIsDragging(false);
+      setIsCompleted(false);
+    }
+  }, [props.isError])
+
   const handleMouseDown = (event) => {
+    // in case there is an error, reset it
+    props.setIsError('')
+
     setIsDragging(true);
   };
   const handleTouchStart = (event) => {
+    // in case there is an error, reset it
+    props.setIsError('')
+
     setIsDragging(true);
   };
 
