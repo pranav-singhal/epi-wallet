@@ -9,7 +9,7 @@ import _ from "lodash";
 import { toTitleCase } from "../../helpers";
 import "./style.scss";
 
-const ChatList = (props) => {
+const ChatList = () => {
   const [threadUsers, setThreadUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -54,35 +54,37 @@ const ChatList = (props) => {
         <Row>
           {_.map(threadUsers, (threadUserName) => {
             const threadUser = _.get(userDetails, [threadUserName]);
-            return (
-              <Col span={24} key={threadUserName}>
-                <AttachBadge
-                  showBadge={
-                    threadUser.user_type && threadUser.user_type === "vendor"
-                  }
-                >
-                  <div
-                    className="chat-list-row"
-                    onClick={() => {
-                      navigate(`/chat?to=${threadUser.username}`);
-                    }}
+            if (threadUser) {
+              return (
+                <Col span={24} key={threadUserName}>
+                  <AttachBadge
+                    showBadge={
+                      threadUser?.user_type && threadUser.user_type === "vendor"
+                    }
                   >
-                    <Avatar src={threadUser.avatar} />
-                    <div className="chat-list-row__content">
-                      <div className="chat-list-row__content-name">
-                        {toTitleCase(threadUser.name)}
+                    <div
+                      className="chat-list-row"
+                      onClick={() => {
+                        navigate(`/chat?to=${threadUser.username}`);
+                      }}
+                    >
+                      <Avatar src={threadUser?.avatar} />
+                      <div className="chat-list-row__content">
+                        <div className="chat-list-row__content-name">
+                          {toTitleCase(threadUser?.name || threadUser?.username|| 'not found')}
+                        </div>
+                        <div className="chat-list-row__content-address">
+                          {threadUser?.address}
+                        </div>
                       </div>
-                      <div className="chat-list-row__content-address">
-                        {threadUser.address}
+                      <div className="chat-list-row__icon">
+                        <ArrowRightOutlined />
                       </div>
                     </div>
-                    <div className="chat-list-row__icon">
-                      <ArrowRightOutlined />
-                    </div>
-                  </div>
-                </AttachBadge>
-              </Col>
-            );
+                  </AttachBadge>
+                </Col>
+              );
+            }
           })}
         </Row>
       </div>
