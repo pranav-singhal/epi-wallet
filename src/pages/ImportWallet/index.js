@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Button, Divider, Form, Input, Typography} from "antd";
+import { Button, Divider, Form, Input, Typography } from "antd";
 import _ from "lodash";
 import { PASSWORD } from "../../helpers/Web3";
 import { createNewUser } from "../../api";
@@ -8,15 +8,16 @@ import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 import useChainContext from "../../hooks/useChainContext";
 import { isValidUsername, subscribeToWebNotifications } from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
+import FullPageLoader from "../../components/FullPageLoader";
 const { Title, Paragraph } = Typography;
+
+const CLAIM_USING_PRIVATE_KEY_MSG =
+  "Provided username is already taken, but you can claim it by providing the associated private key";
 
 const ImportWalletPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [web3] = useChainContext();
   const [userDetails, isUserDetailsLoaded] = useUserDetails();
-  const [inputPrivateKey, setInputPrivateKey] = useState('');
-  const [inputUsername, setInputUsername] = useState('');
-  const [usernameValidationStatus, setUsernameValidationStatus] = useState('valid')
   const [form] = Form.useForm();
 
   const setWallet = (values) => {
@@ -24,12 +25,13 @@ const ImportWalletPage = () => {
     const walletObject = web3.getWalletObjectFromPrivateKey(values.pvtKey); // form validation ensures this is valid
 
     (() => {
-      const takenUsernames = _.keys(userDetails)
-      return _.includes(takenUsernames, values.username) ? Promise.resolve() :
-      createNewUser({
-        username: values.username,
-        address: walletObject.address,
-      })
+      const takenUsernames = _.keys(userDetails);
+      return _.includes(takenUsernames, values.username)
+        ? Promise.resolve()
+        : createNewUser({
+            username: values.username,
+            address: walletObject.address,
+          });
     })()
       .then((_res) => {
         web3.addNewWallet(values.pvtKey, PASSWORD);
@@ -38,140 +40,134 @@ const ImportWalletPage = () => {
         return subscribeToWebNotifications(signer);
       })
       .then(() => {
-        window.location.href = '/';
+        window.location.href = "/";
       })
       .catch((err) => console.error(err));
   };
 
-  useEffect(() => {
+  const validateInputUsername = (getFieldValue, inputUsername) => {
+    const takenUsernames = _.keys(userDetails),
+      inputPrivateKey = getFieldValue("pvtKey");
 
-    // trigger the validations for both fields when either of them changes.
-    // username validation is dependant on the input pvtKey. Thus the validations for both are triggered
-    // when either of them chagnes
-      form.validateFields(['username', 'pvtKey'])
-    .then((res) => {
-      console.log("validation success: ", res)
-    })
-    .catch((err) => {
-      console.log("validation error: ", err)
-    })
-  }, [inputPrivateKey, inputUsername])
-
-  const validateInputUsername = () => {
-
-    const takenUsernames = _.keys(userDetails)
-    if (_.includes(takenUsernames, inputUsername)) {
-      if (inputPrivateKey) {
-        const walletObject = web3.getWalletObjectFromPrivateKey(inputPrivateKey)
-        if (walletObject?.address) {
-            const takenUsernameAddress = userDetails[inputUsername].address
-
-            if (walletObject.address === takenUsernameAddress) {
-              // if there is a private key input and username is already taken
-              // we can create wallet if the adderss of the input key matches the address stored with the
-              // corresponding username
-              setUsernameValidationStatus('valid')
-              return Promise.resolve()
-            }
-        }
-      }
-      
-      setUsernameValidationStatus('error')
-      return Promise.reject()
+    if (!_.includes(takenUsernames, inputUsername)) {
+      return Promise.resolve();
     }
-      // if the input username is not already taken, it can be used with any private key
-      setUsernameValidationStatus('valid')
-      return Promise.resolve()
+
+    if (!inputPrivateKey) {
+      return Promise.reject(CLAIM_USING_PRIVATE_KEY_MSG);
+    }
+
+    const walletObject = web3.getWalletObjectFromPrivateKey(inputPrivateKey);
+
+    if (!walletObject?.address) {
+      return Promise.reject(CLAIM_USING_PRIVATE_KEY_MSG);
+    }
+
+    const takenUsernameAddress = userDetails[inputUsername].address;
+
+    if (walletObject.address === takenUsernameAddress) {
+      return Promise.resolve();
+    }
+
+    return Promise.reject(CLAIM_USING_PRIVATE_KEY_MSG);
+  };
+
+  if (!isUserDetailsLoaded) {
+    return <FullPageLoader removeMessage />;
   }
 
-  if (isUserDetailsLoaded) {
-    return (
-      <SetupWalletLayout className="import-wallet">
-        <div className="import-wallet-head">
-          <ImportOutlined />
-          <Title level={3} type="secondary">
-            Import using Private Key
-          </Title>
-        </div>
-        <div className="create-wallet-description">
-          <Paragraph>
-            Wallet will use the <b>Private Key</b> entered here, and link it with the provided <b>Username</b>.
-            Later anybody can use your username to send or request assets to/from you. Without the hassle of sharing
-            the public address through other messaging channels.
-          </Paragraph>
-          <Paragraph>
-            You will later be able to export that private key from the <b>Settings</b> section.
-          </Paragraph>
-        </div>
-        <Divider />
-        <div className="import-wallet-form">
-          <Form name="import wallet" form={form} onFinish={setWallet} disabled={isSubmitting}>
-            <Form.Item
-              label="Username"
-              name="username"
-              hasFeedback
-              validateStatus={usernameValidationStatus}
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter a username.",
-                },
-                {
-                  message: 'This username is already associated with a different account.',
-                  validator: validateInputUsername
-                },
-                {
-                  message: "No special characters or spaces allowed",
-                  validator: (__, value) => {
-                    return isValidUsername(value) ? Promise.resolve() : Promise.reject()                  
-                  }
-                }
-              ]}
-            >
-              <Input
-              onInput={e => setInputUsername(e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Private Key"
-              name="pvtKey"
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter a private key.",
-                },
-                {
-                  message: "Private key is invalid.",
-                  validator: (_, value) => {
-                    setInputPrivateKey(value)
+  return (
+    <SetupWalletLayout className="import-wallet">
+      <div className="import-wallet-head">
+        <ImportOutlined />
+        <Title level={3} type="secondary">
+          Import using Private Key
+        </Title>
+      </div>
+      <div className="create-wallet-description">
+        <Paragraph>
+          Wallet will use the <b>Private Key</b> entered here, and link it with
+          the provided <b>Username</b>. Later anybody can use your username to
+          send or request assets to/from you. Without the hassle of sharing the
+          public address through other messaging channels.
+        </Paragraph>
+        <Paragraph>
+          You will later be able to export that private key from the{" "}
+          <b>Settings</b> section.
+        </Paragraph>
+      </div>
+      <Divider />
+      <div className="import-wallet-form">
+        <Form
+          name="import wallet"
+          form={form}
+          onFinish={setWallet}
+          disabled={isSubmitting}
+        >
+          <Form.Item
+            label="Username"
+            name="username"
+            hasFeedback
+            rules={[
+              ({ getFieldValue }) => {
+                return {
+                  validator: ($0, value) => {
+                    if (_.isEmpty(value)) {
+                      return Promise.reject("Please enter a username.");
+                    }
+
+                    if (!isValidUsername(value)) {
+                      return Promise.reject(
+                        "No special characters or spaces allowed"
+                      );
+                    }
+
+                    return validateInputUsername(getFieldValue, value);
+                  },
+                };
+              },
+            ]}
+            normalize={(value) => _.toLower(value)}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Private Key"
+            name="pvtKey"
+            hasFeedback
+            rules={[
+              ({ validateFields }) => {
+                validateFields(["username"]);
+                return {
+                  validator: ($0, value) => {
+                    if (_.isEmpty(value)) {
+                      return Promise.reject("Provide a valid Private Key");
+                    }
+
                     return web3.getWalletObjectFromPrivateKey(value)
                       ? Promise.resolve()
-                      : Promise.reject();
+                      : Promise.reject("Provide a valid Private Key");
                   },
-                }
-              ]}
+                };
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isSubmitting}
+              disabled={isSubmitting}
             >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={isSubmitting}
-                disabled={isSubmitting}
-              >
-                Import
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </SetupWalletLayout>
-    );
-  }
-
-  // TODO - return loading screen
-  
+              Import
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </SetupWalletLayout>
+  );
 };
 
 export default ImportWalletPage;
