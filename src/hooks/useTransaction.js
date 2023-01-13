@@ -18,8 +18,9 @@ const useTransaction = () => {
    * @param opts.qrId {string|number} - Unique id for the QR code to which amount is going to be sent
    * @param opts.transactionId {string|number} - Unique id of the transaction that is being approved
    */
-  const initiateTransaction = (opts= {type: 'send'}) => {
+  const initiateTransaction = (opts = { type: "send" }) => {
     setShowPopover(true);
+
     setTransactionState(opts);
   };
 
