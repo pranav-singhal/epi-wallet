@@ -1,7 +1,7 @@
 [{
-    "name": "Ethereum Mainnet",
+    "name": "mainnet",
+    "title": "Ethereum Mainnet",
     "chain": "ETH",
-    "icon": "ethereum",
     "rpc": [
         "https://mainnet.infura.io/v3/INFURA_API_KEY"
     ],
@@ -36,8 +36,8 @@
     ]
 },
 {
-    "name": "Sepolia",
-    "title": "Ethereum Testnet Sepolia",
+    "name": "sepolia",
+    "title": "Sepolia Testnet",
     "chain": "ETH",
     "rpc": [
         "https://sepolia.infura.io/v3/INFURA_API_KEY",
@@ -69,8 +69,8 @@
     ]
 },
 {
-    "name": "Goerli",
-    "title": "Ethereum Testnet Goerli",
+    "name": "goerli",
+    "title": "Goerli Testnet",
     "chain": "ETH",
     "rpc": [
         "https://goerli.infura.io/v3/INFURA_API_KEY"
