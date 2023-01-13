@@ -6,7 +6,12 @@ import { createNewUser } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 import useChainContext from "../../hooks/useChainContext";
-import { isSafariIos, isValidUsername, isWebView, subscribeToWebNotifications } from "../../helpers";
+import {
+  isSafariIos,
+  isValidUsername,
+  isWebView,
+  subscribeToWebNotifications,
+} from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
 import FullPageLoader from "../../components/FullPageLoader";
 const { Title, Paragraph } = Typography;
@@ -37,9 +42,11 @@ const ImportWalletPage = () => {
         web3.addNewWallet(values.pvtKey, PASSWORD);
         localStorage.setItem("current_user", values.username);
         const signer = web3?.getEthersWallet();
-        
+
         // attempt to subscribe to web notifications only if its not webview or safari opened on iphone/ipad
-        return (!isSafariIos() && !isWebView()) ? subscribeToWebNotifications(signer): Promise.resolve();
+        return !isSafariIos() && !isWebView()
+          ? subscribeToWebNotifications(signer)
+          : Promise.resolve();
       })
       .then(() => {
         window.location.href = "/";
@@ -47,9 +54,9 @@ const ImportWalletPage = () => {
       .catch((err) => console.error(err));
   };
 
-  const validateInputUsername = (getFieldValue, inputUsername) => {
+  const validateInputUsername = (inputUsername) => {
     const takenUsernames = _.keys(userDetails),
-      inputPrivateKey = getFieldValue("pvtKey");
+      inputPrivateKey = form.getFieldValue("pvtKey");
 
     if (!_.includes(takenUsernames, inputUsername)) {
       return Promise.resolve();
@@ -104,6 +111,7 @@ const ImportWalletPage = () => {
           name="import wallet"
           form={form}
           onFinish={setWallet}
+          onValuesChange={() => form.validateFields()}
           disabled={isSubmitting}
         >
           <Form.Item
@@ -111,23 +119,21 @@ const ImportWalletPage = () => {
             name="username"
             hasFeedback
             rules={[
-              ({ getFieldValue }) => {
-                return {
-                  validator: ($0, value) => {
-                    if (_.isEmpty(value)) {
-                      return Promise.reject("Please enter a username.");
-                    }
+              {
+                validator: ($0, value) => {
+                  if (_.isEmpty(value)) {
+                    return Promise.reject("Please enter a username.");
+                  }
 
-                    if (!isValidUsername(value)) {
-                      return Promise.reject(
-                        "No special characters or spaces allowed"
-                      );
-                    }
+                  if (!isValidUsername(value)) {
+                    return Promise.reject(
+                      "No special characters or spaces allowed"
+                    );
+                  }
 
-                    return validateInputUsername(getFieldValue, value);
-                  },
-                };
-              },
+                  return validateInputUsername(value);
+                },
+              }
             ]}
             normalize={(value) => _.toLower(value)}
           >
@@ -138,34 +144,32 @@ const ImportWalletPage = () => {
             name="pvtKey"
             hasFeedback
             rules={[
-              ({ validateFields }) => {
-                validateFields(["username"]);
-                return {
-                  validator: ($0, value) => {
-                    if (_.isEmpty(value)) {
-                      return Promise.reject("Provide a valid Private Key");
-                    }
+              {
+                validator: ($0, value) => {
+                  if (_.isEmpty(value)) {
+                    return Promise.reject("Provide a valid Private Key");
+                  }
 
-                    return web3.getWalletObjectFromPrivateKey(value)
-                      ? Promise.resolve()
-                      : Promise.reject("Provide a valid Private Key");
-                  },
-                };
-              },
+                  return web3.getWalletObjectFromPrivateKey(value)
+                    ? Promise.resolve()
+                    : Promise.reject("Provide a valid Private Key");
+                }
+              }
             ]}
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              Import
-            </Button>
-          </Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            onClick={() => {
+              form.submit();
+            }}
+          >
+            Import
+          </Button>
         </Form>
       </div>
     </SetupWalletLayout>
