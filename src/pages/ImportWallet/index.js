@@ -6,7 +6,7 @@ import { createNewUser } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 import useChainContext from "../../hooks/useChainContext";
-import { isValidUsername, subscribeToWebNotifications } from "../../helpers";
+import { isSafariIos, isValidUsername, isWebView, subscribeToWebNotifications } from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
 const { Title, Paragraph } = Typography;
 
@@ -35,7 +35,9 @@ const ImportWalletPage = () => {
         web3.addNewWallet(values.pvtKey, PASSWORD);
         localStorage.setItem("current_user", values.username);
         const signer = web3?.getEthersWallet();
-        return subscribeToWebNotifications(signer);
+        
+        // attempt to subscribe to web notifications only if its not webview or safari opened on iphone/ipad
+        return (!isSafariIos() && !isWebView()) ? subscribeToWebNotifications(signer): Promise.resolve();
       })
       .then(() => {
         window.location.href = '/';
