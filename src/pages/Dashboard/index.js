@@ -18,11 +18,13 @@ import ChatList from "../../components/ChatList";
 import EnableNotificationsPopup from "../../components/EnableNotificationsPopup";
 import ChainSwitcher from "../../components/ChainSwitcher";
 import useChainContext from "../../hooks/useChainContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
   const [web3, rpcUrl] = useChainContext();
+  const navigate = useNavigate()
 
   const [userDetails] = useUserDetails(null);
 
@@ -40,6 +42,14 @@ const Dashboard = (props) => {
     updateAccountBalanceInEth();
 
     const currentUser = localStorage.getItem("current_user");
+
+    // if username does not exist in the list of users, remove the associated localstorage entry
+    // and naviagate to new wallet page
+    if (_.isEmpty(userDetails[currentUser])) {
+      navigate('/wallet/new')
+      localStorage.setItem('current_user', null)
+      
+    }
     setCurrentUserDetails(userDetails[currentUser]);
   }, [userDetails, rpcUrl]);
 
