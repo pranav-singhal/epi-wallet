@@ -24,7 +24,7 @@ const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
   const [accountBalance, setAccountBalance] = useState(0);
   const [web3, rpcUrl] = useChainContext();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [userDetails] = useUserDetails(null);
 
@@ -46,10 +46,12 @@ const Dashboard = (props) => {
     // if username does not exist in the list of users, remove the associated localstorage entry
     // and naviagate to new wallet page
     if (_.isEmpty(userDetails[currentUser])) {
-      navigate('/wallet/new')
-      localStorage.setItem('current_user', null)
-      
+      localStorage.removeItem("current_user");
+      web3.clearAllWallets();
+
+      navigate("/wallet/new");
     }
+
     setCurrentUserDetails(userDetails[currentUser]);
   }, [userDetails, rpcUrl]);
 
@@ -105,9 +107,11 @@ const Dashboard = (props) => {
           <div>{accountBalance.toFixed(5)}</div>
         </div>
         <div className="wallet-info__actions">
-          <div onClick={() => {
-            props.initiateTransaction({type: 'request'})
-          }}>
+          <div
+            onClick={() => {
+              props.initiateTransaction({ type: "request" });
+            }}
+          >
             <Button
               type="primary"
               icon={<ArrowDownOutlined />}

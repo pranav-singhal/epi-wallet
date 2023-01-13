@@ -12,6 +12,7 @@ export const INFURA_URL = 'https://sepolia.infura.io/v3/464843df892c4c7f8fb28e07
 export const BLOCK_EXPLORER_BASE_URL = 'https://sepolia.etherscan.io'
 
 export const PASSWORD = 'crypto_project_x';
+export const WALLET_LOCAL_STORAGE_KEY = 'web3js_wallet';
 //114addfd125a71f033c64f1eeb3b59ca468481233087aaca1b94ad09e54d71d4
 export class Web3Helper {
   web3 = null;
@@ -19,7 +20,7 @@ export class Web3Helper {
   constructor (url = INFURA_URL) {
     this.web3 = new Web3(url);
 
-    this.web3.eth.accounts.wallet.load(PASSWORD)
+    this.web3.eth.accounts.wallet.load(PASSWORD, WALLET_LOCAL_STORAGE_KEY)
   }
 
   async getAccountBalance (address, unit = 'wei') {
@@ -43,13 +44,18 @@ export class Web3Helper {
   addNewWallet (pvtKey, password) {
     try {
       this.web3.eth.accounts.wallet.add(this._trimPrivateKey(pvtKey));
-      this.web3.eth.accounts.wallet.save(password);
+      this.web3.eth.accounts.wallet.save(password, WALLET_LOCAL_STORAGE_KEY);
       return true;
     } catch (e) {
       console.error(e);
       return false
     }
 
+  }
+
+  clearAllWallets () {
+    this.web3.eth.accounts.wallet.clear();
+    localStorage.removeItem(WALLET_LOCAL_STORAGE_KEY);
   }
 
   isAccountLoaded () {
