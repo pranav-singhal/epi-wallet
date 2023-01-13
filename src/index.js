@@ -51,9 +51,6 @@ const Store= ({children}) => {
                 {children}
         </ChainContext.Provider>
     )
-
-
-
 };
 
 const router = createBrowserRouter([

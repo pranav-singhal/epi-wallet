@@ -2,7 +2,7 @@ import {Button} from "antd";
 import React from "react";
 import * as PushAPI from "@pushprotocol/restapi";
 import useIsSubscribed from "../../hooks/useIsSubscribed";
-import {BellFilled, BellOutlined, QrcodeOutlined} from "@ant-design/icons";
+import { BellFilled, BellOutlined } from "@ant-design/icons";
 import useChainContext from "../../hooks/useChainContext";
 
 export const NOTIFICATION_CHANNEL = '0xBA36124E8af635d9d32C4cC49802cacade133a5F';
@@ -10,8 +10,8 @@ export const NOTIFICATION_CHANNEL = '0xBA36124E8af635d9d32C4cC49802cacade133a5F'
 const OptInNotificationsButton = () => {
   const [Web3] = useChainContext();
   const signer = Web3?.getEthersWallet();
-    const public_key = signer?.address;
-    const [isLoading, isSubscribed, setIsSubscribed] = useIsSubscribed(public_key);
+  const public_key = signer?.address;
+  const [isLoading, isSubscribed, setIsSubscribed] = useIsSubscribed(public_key);
 
     const handleOptIn = () => {
 
