@@ -8,6 +8,7 @@ import { PlusSquareOutlined } from "@ant-design/icons";
 import useUserDetails from "../../hooks/useUserDetails";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 import useChainContext from "../../hooks/useChainContext";
+import { isValidUsername } from "../../helpers";
 
 const { Title, Paragraph } = Typography;
 
@@ -86,6 +87,12 @@ const CreateWallet = () => {
                     : Promise.resolve();
                 },
               },
+              {
+                message: "No special characters or spaces allowed",
+                validator: (__, value) => {
+                  return isValidUsername(value) ? Promise.resolve() : Promise.reject()                  
+                }
+              }
             ]}
           >
             <Input />

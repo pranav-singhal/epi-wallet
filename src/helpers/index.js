@@ -103,3 +103,9 @@ const isSafariIos = Boolean(ios) && safari;
 
 return isSafariIos
 }
+
+export const isValidUsername = (inputUsername) => {
+  const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+  return !format.test(inputUsername)
+}

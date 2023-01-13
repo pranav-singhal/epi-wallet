@@ -6,7 +6,7 @@ import { createNewUser } from "../../api";
 import { ImportOutlined } from "@ant-design/icons";
 import SetupWalletLayout from "../../components/Layouts/SetupWalletLayout";
 import useChainContext from "../../hooks/useChainContext";
-import { subscribeToWebNotifications } from "../../helpers";
+import { isValidUsername, subscribeToWebNotifications } from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
 const { Title, Paragraph } = Typography;
 
@@ -119,6 +119,12 @@ const ImportWalletPage = () => {
                 {
                   message: 'This username is already associated with a different account.',
                   validator: validateInputUsername
+                },
+                {
+                  message: "No special characters or spaces allowed",
+                  validator: (__, value) => {
+                    return isValidUsername(value) ? Promise.resolve() : Promise.reject()                  
+                  }
                 }
               ]}
             >
@@ -143,7 +149,7 @@ const ImportWalletPage = () => {
                       ? Promise.resolve()
                       : Promise.reject();
                   },
-                },
+                }
               ]}
             >
               <Input.Password />
