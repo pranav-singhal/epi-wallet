@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import classnames from "classnames";
+import _ from "lodash";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Typography } from "antd";
@@ -15,7 +16,7 @@ const MOVABLE_TRACK_LENGTH = TRACK_LENGTH - SLIDER_WIDTH;
 const SliderTrack = styled.div`
   width: ${TRACK_LENGTH}px;
   height: ${SLIDER_WIDTH}px;
-  border: 1px solid #ccc;
+  border: 1px solid #52c41a;
   background-color: #f6ffed;
   border-radius: ${SLIDER_WIDTH / 2}px;
   overflow: hidden;
@@ -33,7 +34,7 @@ const SliderTrack = styled.div`
     width: ${SLIDER_WIDTH}px;
     height: ${SLIDER_WIDTH}px;
     border-radius: 50%;
-    background-color: #52c41a;
+    background-color: ${(props) => (props.isDisabled ? "#b7eb8f" : "#52c41a")};
     cursor: pointer;
 
     display: flex;
@@ -61,10 +62,18 @@ const SliderTrack = styled.div`
 `;
 
 function SwipeButton(props) {
-  const [currentX, setCurrentX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
+  let [currentX, setCurrentX] = useState(0);
+  let [isDragging, setIsDragging] = useState(false);
+  let [isCompleted, setIsCompleted] = useState(false);
   const trackRef = useRef(null);
+
+  // Doing this to make sure that the use is unable to swipe to approve,
+  // when swipe button is disabled
+  if (props.isDisabled) {
+    setCurrentX = _.noop;
+    setIsDragging = _.noop;
+    setIsCompleted = _.noop;
+  }
 
   useEffect(() => {
     if (!isCompleted) {
@@ -74,27 +83,25 @@ function SwipeButton(props) {
     props.onComplete();
   }, [isCompleted]);
 
-
-
   useEffect(() => {
-    if (props.isError)  {
+    if (props.isError) {
       // if the transaction throws an error
       // reset the swipe button to initial state
       setCurrentX(0);
       setIsDragging(false);
       setIsCompleted(false);
     }
-  }, [props.isError])
+  }, [props.isError]);
 
   const handleMouseDown = (event) => {
     // in case there is an error, reset it
-    props.setIsError('')
+    props.setIsError("");
 
     setIsDragging(true);
   };
   const handleTouchStart = (event) => {
     // in case there is an error, reset it
-    props.setIsError('')
+    props.setIsError("");
 
     setIsDragging(true);
   };
@@ -163,6 +170,7 @@ function SwipeButton(props) {
       onMouseUp={handleMouseUp}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      isDisabled={props.isDisabled}
     >
       <div
         className={classnames("circle", { completed: isCompleted })}
@@ -185,6 +193,7 @@ function SwipeButton(props) {
 
 SwipeButton.propTypes = {
   onComplete: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool,
 };
 
 export default SwipeButton;

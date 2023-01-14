@@ -8,32 +8,48 @@ import { CloseCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
+import { Button } from "antd";
 
 const ApproveSlider = (props) => {
-  const [isTransactionProcessing, setIsTransactionProcessing] = useState(false);
+  const [isTransactionApproving, setIsTransactionApproving] = useState(false);
+  const [isTransactionDeclining, setIsTransactionDeclining] = useState(false);
 
   const onApprove = () => {
-    setIsTransactionProcessing(true);
+    setIsTransactionApproving(true);
     props.onApprove();
   };
 
   useEffect(() => {
     if (props.isError) {
-      setIsTransactionProcessing(false);
+      setIsTransactionApproving(false);
     }
-  }, [props.isError])
+  }, [props.isError]);
 
   return (
     <div className={classnames("approve-buttons", props.className)}>
-      <div
+      <Button
         className={classnames("approve-buttons-decline", {
-          "is-disabled": isTransactionProcessing,
+          "is-disabled": isTransactionApproving || isTransactionDeclining,
         })}
-        onClick={props.onDecline}
-      >
-        <CloseCircleOutlined style={{ fontSize: "16px" }} />
-      </div>
-      <SwipeButton setIsError={props.setIsError} isError={props.isError} onComplete={onApprove} />
+        type="danger"
+        shape="circle"
+        icon={<CloseCircleOutlined />}
+        onClick={() => {
+          if (isTransactionDeclining || isTransactionApproving) {
+            return;
+          }
+
+          setIsTransactionDeclining(true);
+          props.onDecline();
+        }}
+        loading={isTransactionDeclining}
+      />
+      <SwipeButton
+        setIsError={props.setIsError}
+        isError={props.isError}
+        onComplete={onApprove}
+        isDisabled={isTransactionDeclining}
+      />
     </div>
   );
 };

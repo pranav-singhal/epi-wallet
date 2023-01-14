@@ -14,7 +14,7 @@ import useChainContext from "../../hooks/useChainContext";
 import BottomOverlayLayout from "../Layouts/BottomOverlayLayout";
 import TransactionDetails from "./TransactionDetails";
 import { useNavigate } from "react-router-dom";
-import {sendMessageForRequest} from "../../api";
+import { sendMessageForRequest } from "../../api";
 
 const ENTER_DETAILS = "enter_details";
 const CONFIRM_TRANSACTION = "confirm_transaction";
@@ -80,45 +80,45 @@ const TransactionOverlay = (props) => {
       gas,
       props.transactionId,
       props.qrId
-    ).then(() => {
-      props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
-      props.onApprove();
-    })
-    .catch(err => setIsError(err.message.split("Returned error: ")[1]))
+    )
+      .then(() => {
+        props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
+        props.onApprove();
+      })
+      .catch((err) => setIsError(err.message.split("Returned error: ")[1]));
   };
 
   const getContent = () => {
-    const transactionType = props.type
+    const transactionType = props.type;
     switch (activeStepKey) {
       case ENTER_DETAILS:
-          return (
-              <TransactionDetails
-                  type={transactionType}
-                  users={_.values(userDetails)}
-                  onNext={(amount, selectedUser) => {
-                    if (transactionType === 'send') {
-                      setAmount(amount);
-                      setToUsername(selectedUser);
-                      setActiveStepIndex(activeStepIndex + 1);
-                    }
+        return (
+          <TransactionDetails
+            type={transactionType}
+            users={_.values(userDetails)}
+            onNext={(amount, selectedUser) => {
+              if (transactionType === "send") {
+                setAmount(amount);
+                setToUsername(selectedUser);
+                setActiveStepIndex(activeStepIndex + 1);
+              }
 
-                    if (transactionType === 'request') {
-                      setIsLoading(true);
-                      sendMessageForRequest({
-                        newMessageAmount: amount,
-                        threadUserName: selectedUser
-                      })
-                          .then(() => {
-                            navigate(`/chat?to=${selectedUser}`);
-                          })
-                    }
-                }}
-              />
-          );
+              if (transactionType === "request") {
+                setIsLoading(true);
+                sendMessageForRequest({
+                  newMessageAmount: amount,
+                  threadUserName: selectedUser,
+                }).then(() => {
+                  navigate(`/chat?to=${selectedUser}`);
+                });
+              }
+            }}
+          />
+        );
       case CONFIRM_TRANSACTION:
         return (
           <ConfirmTransaction
-          setIsError={setIsError}
+            setIsError={setIsError}
             isError={isError}
             from={fromDetails}
             to={toDetails}

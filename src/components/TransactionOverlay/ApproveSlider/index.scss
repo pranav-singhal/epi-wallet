@@ -4,9 +4,10 @@
   gap: 12px;
   justify-content: space-between;
 
+  // Important is added to override antd design
   &-decline {
-    width: 50px;
-    height: 50px;
+    width: 50px !important;
+    height: 50px !important;
     border-radius: 50%;
 
     display: flex;
