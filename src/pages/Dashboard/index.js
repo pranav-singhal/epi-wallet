@@ -9,9 +9,7 @@ import _ from "lodash";
 import {
   ArrowDownOutlined,
   ArrowRightOutlined,
-  LinkOutlined,
 } from "@ant-design/icons";
-import { BLOCK_EXPLORER_BASE_URL } from "../../helpers/Web3";
 import { toTitleCase } from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
 import ChatList from "../../components/ChatList";
@@ -19,6 +17,7 @@ import EnableNotificationsPopup from "../../components/EnableNotificationsPopup"
 import ChainSwitcher from "../../components/ChainSwitcher";
 import useChainContext from "../../hooks/useChainContext";
 import { useNavigate } from "react-router-dom";
+import AddressBar from "../../components/AddressBar";
 
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
@@ -55,17 +54,6 @@ const Dashboard = (props) => {
     setCurrentUserDetails(userDetails[currentUser]);
   }, [userDetails, rpcUrl]);
 
-  const getAddress = () => {
-    if (_.isEmpty(currentUserDetails)) {
-      return null;
-    }
-
-    const fullAddress = currentUserDetails.address,
-      beginning = fullAddress.slice(0, 7),
-      ending = fullAddress.slice(-6);
-
-    return `${beginning}...${ending}`;
-  };
 
   if (_.isEmpty(currentUserDetails)) {
     return (
@@ -83,19 +71,7 @@ const Dashboard = (props) => {
         <div className="wallet-info__name">
           <Avatar size={64} src={currentUserDetails.avatar} />
           <div>{toTitleCase(currentUserDetails.name)}</div>
-          <div
-            className="wallet-info__name-address"
-            onClick={() => {
-              window.open(
-                `${BLOCK_EXPLORER_BASE_URL}/address/${currentUserDetails.address}`
-              );
-            }}
-          >
-            <div>{_.toUpper(getAddress())}</div>
-            <div>
-              <LinkOutlined />
-            </div>
-          </div>
+          <AddressBar currentUserDetails={currentUserDetails} />
         </div>
         <div className="wallet-info__balance">
           <img
