@@ -112,7 +112,7 @@ const CryptoTransferMessage = (props) => {
 
   useEffect(() => {
     setMessageStatus(message.status);
-  }, props.status);
+  }, [props.status]);
 
   return (
     <div className="crypto-message">
