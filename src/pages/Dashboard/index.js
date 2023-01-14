@@ -6,10 +6,7 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Divider, Skeleton } from "antd";
 import _ from "lodash";
-import {
-  ArrowDownOutlined,
-  ArrowRightOutlined,
-} from "@ant-design/icons";
+import { ArrowDownOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { toTitleCase } from "../../helpers";
 import useUserDetails from "../../hooks/useUserDetails";
 import ChatList from "../../components/ChatList";
@@ -18,6 +15,8 @@ import ChainSwitcher from "../../components/ChainSwitcher";
 import useChainContext from "../../hooks/useChainContext";
 import { useNavigate } from "react-router-dom";
 import AddressBar from "../../components/AddressBar";
+import ExternalLink from "../../icons/ExternalLinkIcon";
+import { BLOCK_EXPLORER_BASE_URL } from "../../helpers/Web3";
 
 const Dashboard = (props) => {
   const [currentUserDetails, setCurrentUserDetails] = useState({});
@@ -54,7 +53,6 @@ const Dashboard = (props) => {
     setCurrentUserDetails(userDetails[currentUser]);
   }, [userDetails, rpcUrl]);
 
-
   if (_.isEmpty(currentUserDetails)) {
     return (
       <div className="wallet-info-loading wallet-info">
@@ -68,6 +66,16 @@ const Dashboard = (props) => {
     <>
       <ChainSwitcher />
       <div className="wallet-info">
+        <div
+          className="wallet-info__external-link"
+          onClick={() => {
+            window.open(
+              `${BLOCK_EXPLORER_BASE_URL}/address/${currentUserDetails.address}`
+            );
+          }}
+        >
+          <ExternalLink size={24} />
+        </div>
         <div className="wallet-info__name">
           <Avatar size={64} src={currentUserDetails.avatar} />
           <div>{toTitleCase(currentUserDetails.name)}</div>
