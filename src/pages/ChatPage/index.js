@@ -6,7 +6,11 @@
 import { Button, Empty, InputNumber } from "antd";
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import { fetchMessages, sendMessageForRequest, updateTransactionStatus } from "../../api";
+import {
+  fetchMessages,
+  sendMessageForRequest,
+  updateTransactionStatus,
+} from "../../api";
 import CryptoTransferMessage from "../../components/CryptoTransferMessage";
 import { useNavigate } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
@@ -26,6 +30,8 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const query = useQuery();
   const to = query.get("to");
+
+  const [sendingRequest, setSendingRequest] = useState(false);
 
   const threadUser = _.get(userDetails, to, {});
 
@@ -62,16 +68,17 @@ const ChatPage = () => {
   };
 
   const handleRequest = () => {
+    setSendingRequest(true);
+
     sendMessageForRequest({
       newMessageAmount,
       threadUserName: to,
     })
       .then(() => {
-        setNewMessageAmount(0);
-        return fetchMessages(to);
+        return reFetchMessages();
       })
-      .then((res) => setMessageArray(res.messages))
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
+      .finally(() => setSendingRequest(false));
   };
 
   useEffect(() => {
@@ -96,6 +103,13 @@ const ChatPage = () => {
       target.scroll({ top: target.scrollHeight, behavior: "smooth" });
     });
   }, [isLoading]);
+
+  const reFetchMessages = () => {
+    return fetchMessages(to).then((res) => {
+      setNewMessageAmount(0);
+      setMessageArray(res.messages);
+    });
+  };
 
   if (isLoading) {
     return <FullPageLoader message="Fetching transactions..." />;
@@ -145,7 +159,12 @@ const ChatPage = () => {
         <Button
           type="primary"
           onClick={handleRequest}
-          disabled={!_.isNumber(newMessageAmount) || newMessageAmount <= 0}
+          disabled={
+            !_.isNumber(newMessageAmount) ||
+            newMessageAmount <= 0 ||
+            sendingRequest
+          }
+          loading={sendingRequest}
         >
           Request
         </Button>
@@ -154,7 +173,12 @@ const ChatPage = () => {
           onClick={() => {
             handleSend();
           }}
-          disabled={!_.isNumber(newMessageAmount) || newMessageAmount <= 0}
+          loading={shouldShowTransactionPopover}
+          disabled={
+            !_.isNumber(newMessageAmount) ||
+            newMessageAmount <= 0 ||
+            shouldShowTransactionPopover
+          }
         >
           Send
         </Button>
@@ -162,23 +186,22 @@ const ChatPage = () => {
       {shouldShowTransactionPopover && (
         <TransactionConfirmationOverlay
           {...transactionDetails}
-          onApprove={endTransaction}
-          onDecline={() => {
-          
-            setIsLoading(true);
-            updateTransactionStatus({txStatus: "declined", id: transactionDetails?.transactionId})
-            .then(() => {
-              return fetchMessages(to)
-            })
-            .then((res) => {
-              setMessageArray(res.messages);
-              
+          onApprove={() => {
+            reFetchMessages().then(() => {
               endTransaction();
+            });
+          }}
+          onDecline={() => {
+            updateTransactionStatus({
+              txStatus: "declined",
+              id: transactionDetails?.transactionId,
             })
-            .finally(() => {
-              setIsLoading(false);
-            })
-            
+              .then(() => {
+                return reFetchMessages();
+              })
+              .then(() => {
+                endTransaction();
+              });
           }}
           onCancel={endTransaction}
         />

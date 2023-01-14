@@ -45,15 +45,13 @@ const ConfirmTransaction = (props) => {
         </div>
       </div>
       <ApproveSlider
-      setIsError={props.setIsError}
+        setIsError={props.setIsError}
         isError={props.isError}
         onApprove={props.onApprove}
         onDecline={props.onDecline}
         className="confirm-transaction-cta"
       />
-      {
-        props.isError && <TransactionErrorMesage message={props.isError} />
-      }
+      {props.isError && <TransactionErrorMesage message={props.isError} />}
     </div>
   );
 };
@@ -70,7 +68,7 @@ ConfirmTransaction.propTypes = {
   value: PropTypes.number.isRequired,
   gas: PropTypes.number.isRequired,
   onApprove: PropTypes.func.isRequired,
-  onDecline: PropTypes.func.isRequired
+  onDecline: PropTypes.func.isRequired,
 };
 
 export default ConfirmTransaction;

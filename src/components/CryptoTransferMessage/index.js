@@ -104,7 +104,15 @@ const CryptoTransferMessage = (props) => {
           clearInterval(interval);
         });
     }, 3000);
-  });
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    setMessageStatus(message.status);
+  }, [props.status]);
 
   return (
     <div className="crypto-message">
