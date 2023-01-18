@@ -16,8 +16,8 @@ const getHeaders = () => {
           return myHeaders;
 }
 
-export const fetchMessages = (threadUser) => {
-  return fetch(`${BASE_URL}/messages?sender=${getCurrentUser()}&recipient=${threadUser}`)
+export const fetchMessages = (threadUser, chainId) => {
+  return fetch(`${BASE_URL}/messages?sender=${getCurrentUser()}&recipient=${threadUser}&chainId=${chainId}`)
     .then(res => res.json())
 };
 
@@ -60,9 +60,7 @@ export const getUserSubscription = (username) => {
 export const subscribeToNotifications = (signer) => {
   const currentUsername = localStorage.getItem('current_user');
   if (currentUsername) {
-    
     const public_key = signer?.address;
-    
     return (() => {
       if (isWebView() || isSafariIos()) {
         return Promise.resolve()
@@ -99,10 +97,9 @@ export const subscribeToNotifications = (signer) => {
   } else {
     return Promise.reject();
   }
-  
 }
 
-export const sendMessageForRequest = ({newMessageAmount, threadUserName}) => {
+export const sendMessageForRequest = ({newMessageAmount, threadUserName, chainId = 0}) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   return fetch(`${BASE_URL}/message`, {
@@ -113,7 +110,8 @@ export const sendMessageForRequest = ({newMessageAmount, threadUserName}) => {
       "sender": getCurrentUser(),
       "recipient": threadUserName,
       "txDetails": {
-        "amount": newMessageAmount
+        "amount": newMessageAmount,
+        chainId
       }
     }),
   })

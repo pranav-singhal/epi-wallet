@@ -48,6 +48,7 @@ const TransactionOverlay = (props) => {
   const toDetails = _.get(userDetails, toUsername);
 
   const navigate = useNavigate();
+  const chainId = _.get(props, 'chainId', 0)
 
   useEffect(() => {
     const transactionSteps = [];
@@ -79,13 +80,13 @@ const TransactionOverlay = (props) => {
       amount,
       gas,
       props.transactionId,
-      props.qrId
-    )
-      .then(() => {
-        props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
-        props.onApprove();
-      })
-      .catch((err) => setIsError(err.message.split("Returned error: ")[1]));
+      props.qrId,
+      chainId
+    ).then(() => {
+      props.shouldNavigateToReceiver && navigate(`/chat?to=${toUsername}`);
+      props.onApprove();
+    })
+    .catch(err => setIsError(err.message.split("Returned error: ")[1]))
   };
 
   const getContent = () => {

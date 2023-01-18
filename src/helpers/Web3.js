@@ -99,7 +99,7 @@ export class Web3Helper {
     return new ethers.Wallet(privateKey);
   }
 
-  sendTransaction (to, value, gas, transactionId= null, qrId = null) {
+  sendTransaction (to, value, gas, transactionId= null, qrId = null, chainId = 0) {
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
         from: this.getAccountAddress(),
@@ -134,7 +134,8 @@ export class Web3Helper {
                 "txDetails": {
                   amount: value,
                   hash: hash,
-                  qrCodeId: qrId
+                  qrCodeId: qrId,
+                  chainId
                 },
                 meta: {
                   publicKey: this.getAccountAddress()

@@ -20,6 +20,8 @@ import { toTitleCase } from "../../helpers";
 import FullPageLoader from "../../components/FullPageLoader";
 import TransactionConfirmationOverlay from "../../components/TransactionOverlay";
 import useTransaction from "../../hooks/useTransaction";
+import useChainContext from "../../hooks/useChainContext";
+import ChainSwitcher from "../../components/ChainSwitcher";
 
 const ChatPage = () => {
   const [newMessageAmount, setNewMessageAmount] = useState(0);
@@ -30,6 +32,7 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const query = useQuery();
   const to = query.get("to");
+  const [,,chainId] = useChainContext();
 
   const [sendingRequest, setSendingRequest] = useState(false);
 
@@ -54,16 +57,17 @@ const ChatPage = () => {
       return;
     }
 
-    fetchMessages(to).then((res) => {
+    fetchMessages(to, chainId).then((res) => {
       setMessageArray(res.messages);
       setIsLoading(false);
     });
-  }, [usersLoaded]);
+  }, [usersLoaded, chainId]);
 
   const handleSend = () => {
     initiateTransaction({
       to,
       value: newMessageAmount,
+      chainId
     });
   };
 
@@ -73,6 +77,7 @@ const ChatPage = () => {
     sendMessageForRequest({
       newMessageAmount,
       threadUserName: to,
+      chainId
     })
       .then(() => {
         return reFetchMessages();
@@ -105,7 +110,7 @@ const ChatPage = () => {
   }, [isLoading]);
 
   const reFetchMessages = () => {
-    return fetchMessages(to).then((res) => {
+    return fetchMessages(to, chainId).then((res) => {
       setNewMessageAmount(0);
       setMessageArray(res.messages);
     });
@@ -133,6 +138,7 @@ const ChatPage = () => {
       onBackClick={() => navigate("/")}
       headerTitle={toTitleCase(threadUser.name)}
     >
+      <ChainSwitcher />
       <div className="chat-page-messages" ref={messagesElement}>
         {_.map(_.orderBy(messagesArray, ["createdAt"], ["asc"]), (message) => (
           <CryptoTransferMessage
